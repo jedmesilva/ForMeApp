@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import MakeForMe from "./pages/MakeForMe";
 import Orders from "./pages/Orders";
 import Account from "./pages/Account";
+import CreateRequest from "./pages/CreateRequest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/makeforme" element={<MakeForMe />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/create" element={<CreateRequest />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
