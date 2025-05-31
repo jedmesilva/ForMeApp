@@ -190,64 +190,65 @@ export default function AccountApp() {
   };
 
   const CardsModal = () => (
-    <div className="fixed inset-0 bg-white z-50 flex flex-col">
-      {/* Header fixo */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-6 pb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-white">Meus Cartões</h2>
-          <button 
-            onClick={() => setShowCardsModal(false)}
-            className="p-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors"
-          >
-            <X className="w-5 h-5 text-white" />
+    <div className="fixed inset-0 bg-white z-50">
+      <div className="h-full overflow-y-auto pb-28">
+        <div className="p-4">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Meus Cartões</h2>
+            <button 
+              onClick={() => setShowCardsModal(false)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-600" />
+            </button>
+          </div>
+          
+          {/* Lista de cartões */}
+          <div className="space-y-4 mb-6">
+            {cartoesCadastrados.map((cartao) => (
+              <div key={cartao.id} className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-xl text-white relative">
+                {cartao.principal && (
+                  <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
+                    Principal
+                  </div>
+                )}
+                <div className="mb-2">
+                  <p className="text-blue-100 text-sm">{cartao.nome}</p>
+                </div>
+                <div className="text-lg font-mono mb-3">
+                  {cartao.numero}
+                </div>
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm text-blue-200">
+                    Válido até {cartao.validade}
+                  </span>
+                  <span className="text-lg">
+                    {getBandeiraIcon(cartao.bandeira)}
+                  </span>
+                </div>
+                
+                {/* Botões de ação */}
+                <div className="flex gap-2">
+                  <button className="flex-1 bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                    Editar
+                  </button>
+                  {!cartao.principal && (
+                    <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">
+                      Excluir
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Botão adicionar */}
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+            <Plus className="w-5 h-5" />
+            Adicionar novo cartão
           </button>
         </div>
-      </div>
-      
-      {/* Conteúdo scrollável */}
-      <div className="flex-1 p-4 overflow-y-auto pb-28">
-        <div className="space-y-4 mb-6">
-          {cartoesCadastrados.map((cartao) => (
-            <div key={cartao.id} className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-xl text-white relative">
-              {cartao.principal && (
-                <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
-                  Principal
-                </div>
-              )}
-              <div className="mb-2">
-                <p className="text-blue-100 text-sm">{cartao.nome}</p>
-              </div>
-              <div className="text-lg font-mono mb-3">
-                {cartao.numero}
-              </div>
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-sm text-blue-200">
-                  Válido até {cartao.validade}
-                </span>
-                <span className="text-lg">
-                  {getBandeiraIcon(cartao.bandeira)}
-                </span>
-              </div>
-              
-              {/* Botões de ação */}
-              <div className="flex gap-2">
-                <button className="flex-1 bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">
-                  Editar
-                </button>
-                {!cartao.principal && (
-                  <button className="bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">
-                    Excluir
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 sticky bottom-4">
-          <Plus className="w-5 h-5" />
-          Adicionar novo cartão
-        </button>
       </div>
     </div>
   );
