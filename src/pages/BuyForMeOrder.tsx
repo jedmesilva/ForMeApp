@@ -374,20 +374,29 @@ export default function BuyForMeOrder() {
                             
                             <div className="flex gap-2">
                               <button
-                                onClick={() => toggleOtherLocation(product.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleOtherLocation(product.id);
+                                }}
                                 className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium"
                               >
                                 Outro Local
                               </button>
                               <button
-                                onClick={() => moveProduct(product.id, 'selected')}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  moveProduct(product.id, 'selected');
+                                }}
                                 className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                                 title="Adicionar ao carrinho"
                               >
                                 <Plus className="w-4 h-4" />
                               </button>
                               <button
-                                onClick={() => moveProduct(product.id, 'not_found')}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  moveProduct(product.id, 'not_found');
+                                }}
                                 className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                                 title="Marcar como não encontrado"
                               >
@@ -423,20 +432,29 @@ export default function BuyForMeOrder() {
                             
                             <div className="flex gap-2">
                               <button
-                                onClick={() => toggleOtherLocation(product.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleOtherLocation(product.id);
+                                }}
                                 className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium"
                               >
                                 ← Voltar
                               </button>
                               <button
-                                onClick={() => moveProduct(product.id, 'selected')}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  moveProduct(product.id, 'selected');
+                                }}
                                 className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                                 title="Adicionar ao carrinho"
                               >
                                 <Plus className="w-4 h-4" />
                               </button>
                               <button
-                                onClick={() => moveProduct(product.id, 'not_found')}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  moveProduct(product.id, 'not_found');
+                                }}
                                 className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                                 title="Marcar como não encontrado"
                               >
