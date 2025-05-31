@@ -225,21 +225,7 @@ export default function BuyForMeOrder() {
 
       {/* Content */}
       <div className="flex-1 p-4">
-        {/* Status Summary */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-white p-3 rounded-lg text-center border-2 border-red-200">
-            <div className="text-2xl font-bold text-red-600">{getProductsByStatus('not_purchased').length}</div>
-            <div className="text-sm text-gray-600">Itens</div>
-          </div>
-          <div className="bg-white p-3 rounded-lg text-center border-2 border-yellow-200">
-            <div className="text-2xl font-bold text-yellow-600">{getProductsByStatus('selected').length}</div>
-            <div className="text-sm text-gray-600">Selecionados</div>
-          </div>
-          <div className="bg-white p-3 rounded-lg text-center border-2 border-green-200">
-            <div className="text-2xl font-bold text-green-600">{getProductsByStatus('purchased').length}</div>
-            <div className="text-sm text-gray-600">Comprados</div>
-          </div>
-        </div>
+        
 
         {/* Action Buttons */}
         <div className="flex gap-2 mb-4">
