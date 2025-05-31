@@ -48,7 +48,7 @@ export function BottomNavbar() {
         }`}
       >
         <ClipboardList className="w-5 h-5 mb-1" />
-        <span className="text-xs font-medium">Pedidos</span>
+        <span className="text-xs font-medium">ForMe</span>
       </button>
       
       <button 
@@ -62,7 +62,7 @@ export function BottomNavbar() {
         <div className="w-5 h-5 mb-1 bg-gray-400 rounded-full flex items-center justify-center">
           <User className="w-3 h-3 text-white" />
         </div>
-        <span className="text-xs font-medium">Conta</span>
+        <span className="text-xs font-medium">Me</span>
       </button>
     </div>
   );
