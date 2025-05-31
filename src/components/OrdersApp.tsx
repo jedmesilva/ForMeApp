@@ -147,7 +147,7 @@ export default function OrdersApp() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-8 pb-6">
         <TopHeader title="Meus Pedidos" subtitle="Gerencie seus pedidos, Lucas" />
 
         {/* Dashboard Card Recolhível */}

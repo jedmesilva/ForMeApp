@@ -254,7 +254,7 @@ export default function AccountApp() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-8 pb-6">
         <TopHeader title="Minha Conta" subtitle={`Olá, ${userData.nome}`} />
 
         {/* Card de Saldo */}
