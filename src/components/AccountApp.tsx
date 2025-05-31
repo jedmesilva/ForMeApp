@@ -190,11 +190,11 @@ export default function AccountApp() {
   };
 
   const CardsModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex flex-col z-50">
-      <div className="bg-white flex-1 overflow-y-auto pb-20">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-4 sticky top-0 bg-white py-2 border-b">
-            <h2 className="text-xl font-bold">Meus Cartões</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Meus Cartões</h2>
             <button 
               onClick={() => setShowCardsModal(false)}
               className="p-2 rounded-lg hover:bg-gray-100"
@@ -210,17 +210,6 @@ export default function AccountApp() {
                   <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
                     Principal
                   </div>
-                )}
-                {!cartao.principal && (
-                  <button 
-                    onClick={() => {
-                      // Aqui você pode adicionar a lógica para excluir o cartão
-                      console.log('Excluir cartão:', cartao.id);
-                    }}
-                    className="absolute top-2 right-2 p-1 rounded-full bg-red-500 hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-4 h-4 text-white" />
-                  </button>
                 )}
                 <div className="mb-2">
                   <p className="text-blue-100 text-sm">{cartao.nome}</p>
@@ -240,12 +229,10 @@ export default function AccountApp() {
             ))}
           </div>
           
-          <div className="sticky bottom-0 bg-white pt-4 border-t">
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-              <Plus className="w-5 h-5" />
-              Adicionar novo cartão
-            </button>
-          </div>
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+            <Plus className="w-5 h-5" />
+            Adicionar novo cartão
+          </button>
         </div>
       </div>
     </div>
@@ -254,7 +241,7 @@ export default function AccountApp() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-8 pb-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
         <TopHeader title="Minha Conta" subtitle={`Olá, ${userData.nome}`} />
 
         {/* Card de Saldo */}
