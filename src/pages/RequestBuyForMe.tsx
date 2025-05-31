@@ -1,23 +1,54 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ShoppingBag, Camera, Sparkles, FileText, MapPin, DollarSign, Clock } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Camera, Upload, FileText, MapPin, DollarSign, CreditCard, Check, Plus, Search, X } from "lucide-react";
 import { useState } from "react";
+
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  estimatedPrice: number;
+  image: string;
+}
+
+interface CartItem extends Product {
+  quantity: number;
+}
 
 export default function RequestBuyForMe() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'manual' | 'ai'>('manual');
-  const [aiInput, setAiInput] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [activeTab, setActiveTab] = useState<'select' | 'send'>('select');
   
-  const [formData, setFormData] = useState({
-    items: '',
-    establishment: '',
-    address: '',
-    reward: '',
-    urgency: 'Média',
-    observations: ''
-  });
+  // Step 1 - Lista de compras
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [textList, setTextList] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  
+  // Step 2 - Estabelecimentos
+  const [selectedEstablishments, setSelectedEstablishments] = useState<string[]>([]);
+  const [allowMultipleStores, setAllowMultipleStores] = useState(false);
+  
+  // Step 3 - Entrega e recompensa
+  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [observations, setObservations] = useState('');
+  const [reward, setReward] = useState('');
+  
+  // Step 4 - Pagamento
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'balance' | 'pix'>('card');
+
+  // Mock data para produtos
+  const mockProducts: Product[] = [
+    { id: '1', name: 'Leite Integral 1L', category: 'Laticínios', estimatedPrice: 4.50, image: '🥛' },
+    { id: '2', name: 'Pão Francês 500g', category: 'Padaria', estimatedPrice: 3.20, image: '🥖' },
+    { id: '3', name: 'Ovos 12 unidades', category: 'Laticínios', estimatedPrice: 8.90, image: '🥚' },
+    { id: '4', name: 'Manteiga 500g', category: 'Laticínios', estimatedPrice: 12.50, image: '🧈' },
+    { id: '5', name: 'Arroz 5kg', category: 'Grãos', estimatedPrice: 22.90, image: '🍚' },
+    { id: '6', name: 'Feijão Preto 1kg', category: 'Grãos', estimatedPrice: 7.80, image: '🫘' },
+    { id: '7', name: 'Banana Prata 1kg', category: 'Frutas', estimatedPrice: 5.90, image: '🍌' },
+    { id: '8', name: 'Maçã Gala 1kg', category: 'Frutas', estimatedPrice: 8.50, image: '🍎' },
+  ];
 
   const estabelecimentos = [
     { id: "mercado-x", nome: "Mercado X", logo: "🛒" },
@@ -26,6 +57,41 @@ export default function RequestBuyForMe() {
     { id: "padaria-a", nome: "Padaria do João", logo: "🥖" },
   ];
 
+  const filteredProducts = mockProducts.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const addToCart = (product: Product) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCartItems(prev => prev.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+    );
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -33,26 +99,49 @@ export default function RequestBuyForMe() {
     }
   };
 
-  const processWithAI = async () => {
-    if (!aiInput && !imageFile) return;
-    
-    setIsProcessing(true);
-    
-    setTimeout(() => {
-      setFormData({
-        ...formData,
-        items: 'Leite integral 1L, Pão francês 500g, Ovos 12un, Manteiga 500g',
-        establishment: 'mercado-x',
-        observations: 'Gerado automaticamente pela IA com base na sua solicitação'
-      });
-      setIsProcessing(false);
-      setMode('manual');
-    }, 2000);
+  const processTextList = () => {
+    const items = textList.split('\n').filter(item => item.trim());
+    const newCartItems: CartItem[] = items.map((item, index) => ({
+      id: `text-${index}`,
+      name: item.trim(),
+      category: 'Outros',
+      estimatedPrice: 5.00,
+      image: '📦',
+      quantity: 1
+    }));
+    setCartItems(prev => [...prev, ...newCartItems]);
+    setTextList('');
   };
 
+  const getTotalEstimatedPrice = () => {
+    return cartItems.reduce((total, item) => total + (item.estimatedPrice * item.quantity), 0);
+  };
+
+  const canProceedStep1 = () => cartItems.length > 0;
+  const canProceedStep2 = () => selectedEstablishments.length > 0 || selectedEstablishments.includes('any');
+  const canProceedStep3 = () => deliveryAddress.trim() !== '' && reward.trim() !== '';
+
   const handleSubmit = () => {
-    console.log('Pedido de compra:', formData);
+    const orderData = {
+      items: cartItems,
+      establishments: selectedEstablishments,
+      allowMultipleStores,
+      deliveryAddress,
+      observations,
+      reward: parseFloat(reward),
+      paymentMethod,
+      estimatedTotal: getTotalEstimatedPrice()
+    };
+    console.log('Pedido criado:', orderData);
     navigate(-1);
+  };
+
+  const nextStep = () => {
+    if (currentStep < 4) setCurrentStep(currentStep + 1);
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
   return (
@@ -72,150 +161,267 @@ export default function RequestBuyForMe() {
               Criar Pedido de Compra
             </h1>
             <p className="text-blue-100 text-sm">
-              Descreva os itens que precisa comprar
+              Etapa {currentStep} de 4
             </p>
           </div>
         </div>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
+          <div 
+            className="bg-white h-2 rounded-full transition-all duration-300"
+            style={{ width: `${(currentStep / 4) * 100}%` }}
+          />
+        </div>
       </div>
 
-      {/* Conteúdo */}
+      {/* Content */}
       <div className="flex-1 p-4 space-y-6">
-        {/* Seletor de Modo */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-semibold mb-3">Como você quer criar?</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setMode('manual')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                mode === 'manual' 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <FileText className="w-6 h-6 mx-auto mb-2 text-blue-600" />
-              <div className="text-sm font-medium">Manual</div>
-              <div className="text-xs text-gray-500">Preencha os campos</div>
-            </button>
-            
-            <button
-              onClick={() => setMode('ai')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                mode === 'ai' 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <Sparkles className="w-6 h-6 mx-auto mb-2 text-purple-600" />
-              <div className="text-sm font-medium">Com IA</div>
-              <div className="text-xs text-gray-500">Texto ou foto</div>
-            </button>
-          </div>
-        </div>
-
-        {/* Modo IA */}
-        {mode === 'ai' && (
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold mb-3 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
-              Assistente IA para Compras
-            </h3>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Descreva o que você precisa comprar
-                </label>
-                <textarea
-                  value={aiInput}
-                  onChange={(e) => setAiInput(e.target.value)}
-                  className="w-full border rounded-lg p-3 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ex: Preciso de ingredientes para fazer um bolo de chocolate"
-                />
+        {/* Step 1 - Lista de Compras */}
+        {currentStep === 1 && (
+          <>
+            {/* Tabs */}
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="flex border-b border-gray-200 mb-4">
+                <button
+                  onClick={() => setActiveTab('select')}
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'select' 
+                      ? "bg-blue-50 text-blue-600 border-b-2 border-blue-600" 
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                >
+                  Selecionar Produtos
+                </button>
+                <button
+                  onClick={() => setActiveTab('send')}
+                  className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
+                    activeTab === 'send' 
+                      ? "bg-blue-50 text-blue-600 border-b-2 border-blue-600" 
+                      : "text-gray-600 hover:text-gray-800"
+                  }`}
+                >
+                  Enviar Lista
+                </button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Ou envie uma foto da lista de compras
-                </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                    id="image-upload"
-                  />
-                  <label htmlFor="image-upload" className="cursor-pointer">
-                    <Camera className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm text-gray-600">
-                      {imageFile ? imageFile.name : 'Clique para enviar uma foto da lista'}
-                    </p>
-                  </label>
+              {activeTab === 'select' && (
+                <div className="space-y-4">
+                  {/* Search */}
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Buscar produtos..."
+                    />
+                  </div>
+
+                  {/* Products Grid */}
+                  <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
+                    {filteredProducts.map((product) => (
+                      <div 
+                        key={product.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-2xl">{product.image}</span>
+                          <div>
+                            <h3 className="font-medium text-gray-800">{product.name}</h3>
+                            <p className="text-sm text-gray-500">{product.category}</p>
+                            <p className="text-sm font-medium text-green-600">
+                              R$ {product.estimatedPrice.toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => addToCart(product)}
+                          className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'send' && (
+                <div className="space-y-4">
+                  {/* Text List */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Digite sua lista (um item por linha)
+                    </label>
+                    <textarea
+                      value={textList}
+                      onChange={(e) => setTextList(e.target.value)}
+                      className="w-full border rounded-lg p-3 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Ex:&#10;Leite 1L&#10;Pão francês&#10;Ovos 12un"
+                    />
+                    <button
+                      onClick={processTextList}
+                      disabled={!textList.trim()}
+                      className="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      Adicionar à Lista
+                    </button>
+                  </div>
+
+                  {/* Image Upload */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Ou envie uma foto/arquivo da lista
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                      <input
+                        type="file"
+                        accept="image/*,.txt"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      <label htmlFor="file-upload" className="cursor-pointer">
+                        <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-600">
+                          {imageFile ? imageFile.name : 'Clique para enviar arquivo ou foto'}
+                        </p>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Cart */}
+            {cartItems.length > 0 && (
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <h3 className="font-semibold mb-3">
+                  Itens no Carrinho ({cartItems.length})
+                </h3>
+                <div className="space-y-3 max-h-40 overflow-y-auto">
+                  {cartItems.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{item.image}</span>
+                        <div>
+                          <p className="font-medium text-sm">{item.name}</p>
+                          <p className="text-xs text-gray-500">R$ {item.estimatedPrice.toFixed(2)}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          className="w-6 h-6 bg-gray-200 rounded text-gray-600 hover:bg-gray-300 transition-colors"
+                        >
+                          -
+                        </button>
+                        <span className="text-sm font-medium">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="w-6 h-6 bg-gray-200 rounded text-gray-600 hover:bg-gray-300 transition-colors"
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => removeFromCart(item.id)}
+                          className="w-6 h-6 bg-red-100 rounded text-red-600 hover:bg-red-200 transition-colors ml-2"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 pt-3 border-t border-gray-200">
+                  <p className="font-semibold text-right">
+                    Total Estimado: R$ {getTotalEstimatedPrice().toFixed(2)}
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Step 2 - Estabelecimentos */}
+        {currentStep === 2 && (
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <h3 className="font-semibold mb-4">Selecione os Estabelecimentos</h3>
+            
+            <div className="space-y-3">
+              <div
+                className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                  selectedEstablishments.includes('any')
+                    ? 'border-blue-500 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setSelectedEstablishments(['any'])}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center">
+                    {selectedEstablishments.includes('any') && <Check className="w-3 h-3" />}
+                  </div>
+                  <span className="font-medium">Qualquer estabelecimento</span>
                 </div>
               </div>
 
-              <button
-                onClick={processWithAI}
-                disabled={(!aiInput && !imageFile) || isProcessing}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-              >
-                {isProcessing ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Processando...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    Gerar Lista com IA
-                  </>
-                )}
-              </button>
+              <p className="text-sm text-gray-600 text-center">ou selecione específicos:</p>
+
+              {estabelecimentos.map((est) => (
+                <div
+                  key={est.id}
+                  className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                    selectedEstablishments.includes(est.id)
+                      ? 'border-blue-500 bg-blue-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => {
+                    setSelectedEstablishments(prev => {
+                      if (prev.includes('any')) return [est.id];
+                      if (prev.includes(est.id)) {
+                        return prev.filter(id => id !== est.id);
+                      }
+                      return [...prev, est.id];
+                    });
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center">
+                      {selectedEstablishments.includes(est.id) && <Check className="w-3 h-3" />}
+                    </div>
+                    <span className="text-2xl">{est.logo}</span>
+                    <span className="font-medium">{est.nome}</span>
+                  </div>
+                </div>
+              ))}
             </div>
+
+            {selectedEstablishments.length > 1 && !selectedEstablishments.includes('any') && (
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={allowMultipleStores}
+                    onChange={(e) => setAllowMultipleStores(e.target.checked)}
+                    className="rounded"
+                  />
+                  <span className="text-sm">
+                    Permitir comprar em estabelecimentos diferentes
+                  </span>
+                </label>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Formulário Manual */}
-        {mode === 'manual' && (
+        {/* Step 3 - Entrega e Observações */}
+        {currentStep === 3 && (
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5" />
-              Detalhes do Pedido de Compra
-            </h3>
+            <h3 className="font-semibold mb-4">Entrega e Recompensa</h3>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Lista de Itens *
-                </label>
-                <textarea
-                  value={formData.items}
-                  onChange={(e) => setFormData({...formData, items: e.target.value})}
-                  className="w-full border rounded-lg p-3 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ex: Leite 1L, Pão francês, Ovos 12un, Manteiga 500g..."
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  <ShoppingBag className="w-4 h-4 inline mr-1" />
-                  Estabelecimento Preferido
-                </label>
-                <select 
-                  value={formData.establishment}
-                  onChange={(e) => setFormData({...formData, establishment: e.target.value})}
-                  className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Qualquer estabelecimento</option>
-                  {estabelecimentos.map((est) => (
-                    <option key={est.id} value={est.id}>
-                      {est.logo} {est.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               <div>
                 <label className="block text-sm font-medium mb-2">
                   <MapPin className="w-4 h-4 inline mr-1" />
@@ -223,77 +429,150 @@ export default function RequestBuyForMe() {
                 </label>
                 <input
                   type="text"
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
+                  value={deliveryAddress}
+                  onChange={(e) => setDeliveryAddress(e.target.value)}
                   className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Rua, número, bairro..."
+                  placeholder="Rua, número, bairro, CEP..."
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    <DollarSign className="w-4 h-4 inline mr-1" />
-                    Recompensa (R$) *
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.reward}
-                    onChange={(e) => setFormData({...formData, reward: e.target.value})}
-                    className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="10.00"
-                    min="1"
-                    step="0.01"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    <Clock className="w-4 h-4 inline mr-1" />
-                    Urgência
-                  </label>
-                  <select 
-                    value={formData.urgency}
-                    onChange={(e) => setFormData({...formData, urgency: e.target.value})}
-                    className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option>Baixa</option>
-                    <option>Média</option>
-                    <option>Alta</option>
-                    <option>Muito Alta</option>
-                  </select>
-                </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  <DollarSign className="w-4 h-4 inline mr-1" />
+                  Recompensa (R$) *
+                </label>
+                <input
+                  type="number"
+                  value={reward}
+                  onChange={(e) => setReward(e.target.value)}
+                  className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="15.00"
+                  min="1"
+                  step="0.01"
+                  required
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">Observações</label>
                 <textarea
-                  value={formData.observations}
-                  onChange={(e) => setFormData({...formData, observations: e.target.value})}
-                  className="w-full border rounded-lg p-3 h-16 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Instruções especiais, marcas preferidas, etc..."
+                  value={observations}
+                  onChange={(e) => setObservations(e.target.value)}
+                  className="w-full border rounded-lg p-3 h-20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Instruções especiais, quem irá receber, marcas preferidas, etc..."
                 />
               </div>
             </div>
           </div>
         )}
 
-        {/* Botões de Ação */}
+        {/* Step 4 - Resumo e Pagamento */}
+        {currentStep === 4 && (
+          <div className="space-y-6">
+            {/* Resumo do Pedido */}
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <h3 className="font-semibold mb-4">Resumo do Pedido</h3>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Itens ({cartItems.length})</span>
+                  <span>R$ {getTotalEstimatedPrice().toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Recompensa</span>
+                  <span>R$ {parseFloat(reward || '0').toFixed(2)}</span>
+                </div>
+                <div className="border-t pt-2">
+                  <div className="flex justify-between font-semibold text-lg">
+                    <span>Total Estimado</span>
+                    <span>R$ {(getTotalEstimatedPrice() + parseFloat(reward || '0')).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Forma de Pagamento */}
+            <div className="bg-white rounded-xl p-4 shadow-sm">
+              <h3 className="font-semibold mb-4">Forma de Pagamento</h3>
+              
+              <div className="space-y-3">
+                {[
+                  { id: 'card', label: 'Cartão de Crédito/Débito', icon: '💳' },
+                  { id: 'balance', label: 'Saldo no App', icon: '💰' },
+                  { id: 'pix', label: 'PIX', icon: '📱' }
+                ].map((method) => (
+                  <div
+                    key={method.id}
+                    className={`p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                      paymentMethod === method.id
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => setPaymentMethod(method.id as any)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center">
+                        {paymentMethod === method.id && <Check className="w-3 h-3" />}
+                      </div>
+                      <span className="text-xl">{method.icon}</span>
+                      <span className="font-medium">{method.label}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  💡 O valor será retido em seu {paymentMethod === 'card' ? 'cartão' : paymentMethod === 'balance' ? 'saldo' : 'PIX'} 
+                  e cobrado apenas após a confirmação da entrega.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
         <div className="flex gap-3 pb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex-1 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all transform hover:scale-105"
-          >
-            Publicar Pedido
-          </button>
+          {currentStep > 1 && (
+            <button
+              onClick={prevStep}
+              className="flex-1 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
+            >
+              Voltar
+            </button>
+          )}
+          
+          {currentStep < 4 ? (
+            <button
+              onClick={nextStep}
+              disabled={
+                (currentStep === 1 && !canProceedStep1()) ||
+                (currentStep === 2 && !canProceedStep2()) ||
+                (currentStep === 3 && !canProceedStep3())
+              }
+              className="flex-1 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              Próximo
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              className="flex-1 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-all transform hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              Enviar Pedido
+            </button>
+          )}
+          
+          {currentStep === 1 && (
+            <button
+              onClick={() => navigate(-1)}
+              className="flex-1 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-all"
+            >
+              Cancelar
+            </button>
+          )}
         </div>
       </div>
     </div>
