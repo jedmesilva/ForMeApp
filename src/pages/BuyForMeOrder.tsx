@@ -296,7 +296,11 @@ export default function BuyForMeOrder() {
                     Estabelecimento Atual ({getNotPurchasedNormalLocation().length})
                   </h3>
                   {getNotPurchasedNormalLocation().map((product) => (
-                    <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border">
+                    <div 
+                      key={product.id} 
+                      className="bg-white p-4 rounded-lg shadow-sm border cursor-pointer hover:bg-blue-50 transition-colors"
+                      onClick={() => moveProduct(product.id, 'selected')}
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-800">{product.name}</h3>
@@ -307,17 +311,23 @@ export default function BuyForMeOrder() {
                         
                         <div className="flex gap-2">
                           <button
-                            onClick={() => moveProduct(product.id, 'selected')}
-                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleOtherLocation(product.id);
+                            }}
+                            className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium"
+                          >
+                            Outro Local
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveProduct(product.id, 'selected');
+                            }}
+                            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                             title="Adicionar ao carrinho"
                           >
                             <Plus className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => toggleOtherLocation(product.id)}
-                            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
-                          >
-                            Outro Local
                           </button>
                         </div>
                       </div>
@@ -334,7 +344,11 @@ export default function BuyForMeOrder() {
                     Outro Estabelecimento ({getNotPurchasedOtherLocation().length})
                   </h3>
                   {getNotPurchasedOtherLocation().map((product) => (
-                    <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-200">
+                    <div 
+                      key={product.id} 
+                      className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                      onClick={() => moveProduct(product.id, 'selected')}
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-800">{product.name}</h3>
@@ -346,17 +360,23 @@ export default function BuyForMeOrder() {
                         
                         <div className="flex gap-2">
                           <button
-                            onClick={() => moveProduct(product.id, 'selected')}
-                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleOtherLocation(product.id);
+                            }}
+                            className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs font-medium"
+                          >
+                            ← Voltar
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              moveProduct(product.id, 'selected');
+                            }}
+                            className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                             title="Adicionar ao carrinho"
                           >
                             <Plus className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => toggleOtherLocation(product.id)}
-                            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
-                          >
-                            ← Voltar
                           </button>
                         </div>
                       </div>
