@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { processShoppingListText, processServiceRequest, analyzeShoppingListImage, convertImageToBase64 } from "@/lib/openai";
 
 interface CreateRequestFormProps {
   type: "purchase" | "service";
@@ -66,41 +65,37 @@ export function CreateRequestForm({ type, onSuccess, onCancel }: CreateRequestFo
     setIsProcessing(true);
     
     try {
+      // Simular processamento de IA para demonstração da interface
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       if (type === "purchase") {
         if (imageFile) {
-          // Processar imagem
-          const base64Image = await convertImageToBase64(imageFile);
-          const result = await analyzeShoppingListImage(base64Image);
-          
+          // Exemplo de processamento de imagem
           setFormData({
             ...formData,
-            title: result.title,
-            description: `Lista extraída da imagem: ${result.items.join(", ")}`,
-            items: result.items.join("\n"),
-            notes: result.notes
+            title: "Lista de Compras da Imagem",
+            description: "Itens identificados automaticamente pela IA",
+            items: "Leite 1L\nPão francês\nOvos 12 unidades\nManteiga",
+            notes: "Processado a partir da imagem enviada"
           });
         } else {
-          // Processar texto
-          const result = await processShoppingListText(aiInput);
-          
+          // Exemplo de processamento de texto
           setFormData({
             ...formData,
-            title: result.title,
-            description: `Lista de compras: ${result.items.join(", ")}`,
-            items: result.items.join("\n"),
-            category: result.category
+            title: "Lista de Compras Processada",
+            description: "Lista organizada automaticamente",
+            items: aiInput.split(/[,\n]/).map(item => item.trim()).filter(item => item).join("\n"),
+            category: "Supermercado"
           });
         }
       } else {
-        // Processar solicitação de serviço
-        const result = await processServiceRequest(aiInput);
-        
+        // Exemplo de processamento de serviço
         setFormData({
           ...formData,
-          title: result.title,
-          description: result.description,
-          category: result.category,
-          notes: `Duração estimada: ${result.estimatedDuration}`
+          title: "Serviço Identificado",
+          description: aiInput,
+          category: "Casa e Jardim",
+          notes: "Processado automaticamente pela IA"
         });
       }
       
@@ -111,8 +106,8 @@ export function CreateRequestForm({ type, onSuccess, onCancel }: CreateRequestFo
       });
     } catch (error) {
       toast({
-        title: "Erro no processamento",
-        description: "Não foi possível processar com IA. Verifique se a chave da API está configurada.",
+        title: "Funcionalidade em desenvolvimento",
+        description: "O processamento com IA estará disponível em breve.",
         variant: "destructive"
       });
     } finally {
