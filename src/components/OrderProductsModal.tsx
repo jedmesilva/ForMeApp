@@ -1,4 +1,3 @@
-import { X, MapPin, Clock, DollarSign, User, ShoppingBag } from "lucide-react";
 
 interface OrderProductsModalProps {
   pedido: any;
@@ -6,118 +5,111 @@ interface OrderProductsModalProps {
 }
 
 export function OrderProductsModal({ pedido, onClose }: OrderProductsModalProps) {
-  const getUrgenciaColor = (urgencia: string) => {
-    switch(urgencia) {
-      case "Muito Alta": return "bg-red-100 text-red-800 border-red-200";
-      case "Alta": return "bg-orange-100 text-orange-800 border-orange-200";
-      case "Média": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "Baixa": return "bg-green-100 text-green-800 border-green-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full h-full max-w-md max-h-screen flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold">Detalhes do Pedido</h2>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-          </div>
+    <div className="fixed inset-0 bg-white z-50 flex flex-col">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
+        <div className="flex items-center justify-between mb-4">
+          <button 
+            onClick={onClose}
+            className="text-white hover:text-blue-200 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <h2 className="text-xl font-bold">Detalhes do Pedido</h2>
+          <div className="w-6"></div>
         </div>
+        
+        <div className="bg-white bg-opacity-15 backdrop-blur-sm p-4 rounded-xl">
+          <div className="flex items-center justify-between mb-2">
+            <span className="font-semibold text-lg">{pedido.usuario}</span>
+            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+              pedido.urgencia === 'Muito Alta' ? 'bg-red-500 text-white' :
+              pedido.urgencia === 'Alta' ? 'bg-orange-500 text-white' :
+              pedido.urgencia === 'Média' ? 'bg-yellow-500 text-white' :
+              'bg-green-500 text-white'
+            }`}>
+              {pedido.urgencia}
+            </span>
+          </div>
+          <p className="text-blue-100 text-sm">{pedido.clienteRegiao}</p>
+        </div>
+      </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto">
-          {/* User Info Section */}
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-800">{pedido.usuario}</h3>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getUrgenciaColor(pedido.urgencia)}`}>
-                    {pedido.urgencia}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Location and Time */}
+      {/* Conteúdo */}
+      <div className="flex-1 p-6 overflow-y-auto bg-gray-50">
+        <div className="space-y-6">
+          {/* Informações do Estabelecimento */}
+          <div className="bg-white p-4 rounded-xl shadow-sm">
+            <h3 className="font-semibold text-gray-800 mb-3">Estabelecimento</h3>
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-gray-600">
-                <MapPin className="w-4 h-4" />
-                <span className="text-sm">{pedido.clienteRegiao}</span>
-                <span className="text-sm">• {pedido.distancia}km</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-600">
-                <Clock className="w-4 h-4" />
-                <span className="text-sm">{pedido.tempo}</span>
-              </div>
+              <p className="text-blue-600 font-medium">{pedido.estabelecimento}</p>
+              {pedido.estabelecimentoEndereco && (
+                <p className="text-gray-600 text-sm">{pedido.estabelecimentoEndereco}</p>
+              )}
+              {!pedido.estabelecimentoEspecifico && (
+                <p className="text-orange-600 text-sm font-medium">Qualquer estabelecimento</p>
+              )}
             </div>
           </div>
 
-          {/* Establishment Info */}
-          <div className="p-6 border-b border-gray-200">
-            <h4 className="font-semibold text-gray-800 mb-2">Local de Compra</h4>
-            <p className="text-gray-700 font-medium">{pedido.estabelecimento}</p>
-            {pedido.estabelecimentoEndereco && (
-              <p className="text-sm text-gray-600 mt-1">{pedido.estabelecimentoEndereco}</p>
-            )}
-          </div>
-
-          {/* Products List */}
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <ShoppingBag className="w-5 h-5 text-blue-600" />
-              <h4 className="font-semibold text-gray-800">
-                Lista de Produtos ({pedido.itens.length} {pedido.itens.length === 1 ? 'item' : 'itens'})
-              </h4>
-            </div>
-            
-            <div className="space-y-3">
+          {/* Lista de Produtos */}
+          <div className="bg-white p-4 rounded-xl shadow-sm">
+            <h3 className="font-semibold text-gray-800 mb-3">Produtos</h3>
+            <div className="space-y-2">
               {pedido.itens.map((item: string, index: number) => (
-                <div 
-                  key={index}
-                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
-                >
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold text-sm">
-                    {index + 1}
-                  </div>
-                  <span className="text-gray-800 font-medium flex-1">{item}</span>
+                <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                  <span className="text-gray-800">{item}</span>
                 </div>
               ))}
             </div>
-
-            {/* Observations */}
-            {pedido.observacoes && (
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <h5 className="font-semibold text-amber-800 mb-2">Observações:</h5>
-                <p className="text-amber-700 italic">"{pedido.observacoes}"</p>
-              </div>
-            )}
           </div>
-        </div>
 
-        {/* Footer with Reward and Action */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-gray-600 font-medium">Recompensa:</span>
-            <div className="flex items-center gap-1 text-blue-600 font-bold text-xl">
-              <DollarSign className="w-5 h-5" />
-              <span>{pedido.recompensa.toFixed(2)}</span>
+          {/* Informações Adicionais */}
+          <div className="bg-white p-4 rounded-xl shadow-sm">
+            <h3 className="font-semibold text-gray-800 mb-3">Informações</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Distância</span>
+                <span className="font-medium text-gray-800">{pedido.distancia} km</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Tempo estimado</span>
+                <span className="font-medium text-gray-800">{pedido.tempo}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600">Recompensa</span>
+                <span className="font-bold text-green-600">R$ {pedido.recompensa.toFixed(2)}</span>
+              </div>
             </div>
           </div>
-          
-          <button className="w-full bg-blue-600 text-white py-4 rounded-lg font-medium hover:bg-blue-700 transition-all transform hover:scale-105 active:scale-95">
-            Aceitar Pedido
+
+          {/* Observações */}
+          {pedido.observacoes && (
+            <div className="bg-white p-4 rounded-xl shadow-sm">
+              <h3 className="font-semibold text-gray-800 mb-3">Observações</h3>
+              <p className="text-gray-700 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                {pedido.observacoes}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Botões de Ação */}
+      <div className="p-6 bg-white border-t border-gray-200">
+        <div className="space-y-3">
+          <button className="w-full py-4 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-all transform hover:scale-105 active:scale-95">
+            Aceitar Pedido - R$ {pedido.recompensa.toFixed(2)}
+          </button>
+          <button 
+            onClick={onClose}
+            className="w-full py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl font-medium transition-all"
+          >
+            Voltar
           </button>
         </div>
       </div>
