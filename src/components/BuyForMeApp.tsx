@@ -176,6 +176,15 @@ export default function BuyForMeApp() {
       {showOrderDetails && (
         <OrderDetailsModal onClose={() => setShowOrderDetails(false)} />
       )}
+      {showOrderProducts && selectedOrder && (
+        <OrderProductsModal 
+          pedido={selectedOrder}
+          onClose={() => {
+            setShowOrderProducts(false);
+            setSelectedOrder(null);
+          }}
+        />
+      )}
     </div>
   );
 }
