@@ -1,22 +1,17 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { 
   Menu, 
   Bell, 
-  ShoppingBag, 
-  User, 
-  DollarSign,
-  ClipboardList,
   Briefcase
 } from "lucide-react";
 import { CreateOrderModal } from "./CreateOrderModal";
 import { OrderDetailsModal } from "./OrderDetailsModal";
 import { OrderCard } from "./OrderCard";
 import { FilterBar } from "./FilterBar";
+import { BottomNavbar } from "./BottomNavbar";
 
 export default function MakeForMeApp() {
-  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("todos");
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
@@ -80,8 +75,8 @@ export default function MakeForMeApp() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header Verde */}
-      <div className="bg-gradient-to-r from-green-600 to-green-700 px-4 pt-12 pb-6">
+      {/* Header Azul */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
         {/* Navbar Superior */}
         <div className="flex items-center justify-between mb-4">
           <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
@@ -96,7 +91,7 @@ export default function MakeForMeApp() {
         
         {/* Saudação */}
         <div className="mb-4">
-          <p className="text-green-100 text-sm">Pronto para trabalhar, Lucas?</p>
+          <p className="text-blue-100 text-sm">Pronto para trabalhar, Lucas?</p>
         </div>
 
         {/* Card de Serviços em Andamento */}
@@ -109,14 +104,14 @@ export default function MakeForMeApp() {
               <p className="font-semibold text-lg">
                 {pedidosAndamento.aceitos + pedidosAndamento.emAndamento} serviços ativos
               </p>
-              <p className="text-green-100 text-sm">
+              <p className="text-blue-100 text-sm">
                 {pedidosAndamento.aceitos} aceitos • {pedidosAndamento.emAndamento} em andamento
               </p>
             </div>
-            <Briefcase className="w-8 h-8 text-green-200" />
+            <Briefcase className="w-8 h-8 text-blue-200" />
           </div>
           <div className="mt-2 text-right">
-            <span className="text-xs text-green-200">Toque para ver detalhes →</span>
+            <span className="text-xs text-blue-200">Toque para ver detalhes →</span>
           </div>
         </div>
       </div>
@@ -136,7 +131,7 @@ export default function MakeForMeApp() {
       {/* Botão Flutuante */}
       <button 
         onClick={() => setShowCreateOrder(true)}
-        className="fixed bottom-32 right-6 bg-green-600 hover:bg-green-700 p-4 rounded-full shadow-2xl text-white transition-all z-40 transform hover:scale-110 active:scale-95"
+        className="fixed bottom-32 right-6 bg-blue-600 hover:bg-blue-700 p-4 rounded-full shadow-2xl text-white transition-all z-40 transform hover:scale-110 active:scale-95"
       >
         <div className="flex items-center justify-center">
           <Briefcase className="w-6 h-6" />
@@ -144,41 +139,7 @@ export default function MakeForMeApp() {
       </button>
 
       {/* Navbar Inferior Fixa */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center border-t bg-white p-3 shadow-lg z-50">
-        <button 
-          onClick={() => navigate("/")}
-          className="flex flex-col items-center py-2 px-4 rounded-lg text-gray-600 transition-all transform hover:scale-105"
-        >
-          <ShoppingBag className="w-5 h-5 mb-1" />
-          <span className="text-xs font-medium">BuyForMe</span>
-        </button>
-        
-        <button 
-          onClick={() => navigate("/makeforme")} 
-          className="flex flex-col items-center py-2 px-4 rounded-lg bg-green-50 text-green-600 shadow-sm transition-all transform hover:scale-105"
-        >
-          <Briefcase className="w-5 h-5 mb-1" />
-          <span className="text-xs font-medium">MakeForMe</span>
-        </button>
-        
-        <button 
-          onClick={() => navigate("/orders")}
-          className="flex flex-col items-center py-2 px-4 rounded-lg text-gray-600 transition-all transform hover:scale-105"
-        >
-          <ClipboardList className="w-5 h-5 mb-1" />
-          <span className="text-xs font-medium">Pedidos</span>
-        </button>
-        
-        <button 
-          onClick={() => navigate("/account")}
-          className="flex flex-col items-center py-2 px-4 rounded-lg text-gray-600 transition-all transform hover:scale-105"
-        >
-          <div className="w-5 h-5 mb-1 bg-gray-400 rounded-full flex items-center justify-center">
-            <User className="w-3 h-3 text-white" />
-          </div>
-          <span className="text-xs font-medium">Conta</span>
-        </button>
-      </div>
+      <BottomNavbar />
 
       {/* Modais */}
       {showCreateOrder && (
