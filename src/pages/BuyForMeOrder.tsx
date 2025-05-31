@@ -265,33 +265,33 @@ export default function BuyForMeOrder() {
         </div>
 
         {/* Tabs */}
-        <div className="flex bg-gray-200 p-1 rounded-lg mb-4">
+        <div className="flex gap-2 mb-4">
           <button
             onClick={() => setActiveTab('not_purchased')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'not_purchased' 
-                ? 'bg-white text-red-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
+                ? 'bg-blue-600 text-white shadow-md' 
+                : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'
             }`}
           >
             Itens ({getProductsByStatus('not_purchased').length})
           </button>
           <button
             onClick={() => setActiveTab('selected')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'selected' 
-                ? 'bg-white text-yellow-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
+                ? 'bg-blue-600 text-white shadow-md' 
+                : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'
             }`}
           >
             Selecionados ({getProductsByStatus('selected').length})
           </button>
           <button
             onClick={() => setActiveTab('purchased')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+            className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all ${
               activeTab === 'purchased' 
-                ? 'bg-white text-green-600 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-800'
+                ? 'bg-blue-600 text-white shadow-md' 
+                : 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50'
             }`}
           >
             Comprados ({getProductsByStatus('purchased').length})
@@ -322,14 +322,14 @@ export default function BuyForMeOrder() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => moveProduct(product.id, 'selected')}
-                            className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
                             title="Adicionar ao carrinho"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => toggleOtherLocation(product.id)}
-                            className="px-3 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors text-xs"
+                            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
                           >
                             Outro Local
                           </button>
@@ -348,11 +348,12 @@ export default function BuyForMeOrder() {
                     Outro Estabelecimento ({getNotPurchasedOtherLocation().length})
                   </h3>
                   {getNotPurchasedOtherLocation().map((product) => (
-                    <div key={product.id} className="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
+                    <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-200">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
                           <h3 className="font-medium text-gray-800">{product.name}</h3>
-                          <p className="text-sm text-blue-600 mt-1">
+                          <p className="text-sm text-blue-600 mt-1 flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
                             Para comprar em outro local
                           </p>
                         </div>
@@ -360,16 +361,16 @@ export default function BuyForMeOrder() {
                         <div className="flex gap-2">
                           <button
                             onClick={() => moveProduct(product.id, 'selected')}
-                            className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
                             title="Adicionar ao carrinho"
                           >
                             <Plus className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => toggleOtherLocation(product.id)}
-                            className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs"
+                            className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs font-medium"
                           >
-                            Voltar
+                            ← Voltar
                           </button>
                         </div>
                       </div>
@@ -406,7 +407,7 @@ export default function BuyForMeOrder() {
                         <>
                           <button
                             onClick={() => moveProduct(product.id, 'not_purchased')}
-                            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
                             title="Remover do carrinho"
                           >
                             <X className="w-4 h-4" />
@@ -415,7 +416,7 @@ export default function BuyForMeOrder() {
                       )}
                       
                       {activeTab === 'purchased' && (
-                        <div className="flex items-center gap-2 text-green-600">
+                        <div className="flex items-center gap-2 text-blue-600">
                           <CheckCircle2 className="w-4 h-4" />
                           <span className="text-sm font-medium">Comprado</span>
                         </div>
