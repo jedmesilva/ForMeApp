@@ -1,4 +1,4 @@
-import { MapPin, Clock, DollarSign, Briefcase, Eye, Play } from "lucide-react";
+import { MapPin, Clock, DollarSign, Briefcase, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface OrderCardProps {
@@ -99,24 +99,20 @@ export function OrderCard({ pedido, activeTab, onViewDetails, showExecuteButton 
         </div>
       </div>
 
-      <div className="flex gap-2">
-            <button 
-              onClick={onViewDetails}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
-            >
-              <Eye className="w-4 h-4" />
-              Ver Detalhes
-            </button>
-            {showExecuteButton && activeTab === 'buy' && (
-              <button 
-                onClick={() => navigate(`/buyforme/${pedido.id}`)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
-              >
-                <Play className="w-4 h-4" />
-                Executar
-              </button>
-            )}
-          </div>
+      {showExecuteButton && activeTab === 'buy' && (
+        <div className="flex justify-end">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/buyforme/${pedido.id}`);
+            }}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
+          >
+            <Play className="w-4 h-4" />
+            Iniciar compras
+          </button>
+        </div>
+      )}
     </div>
   );
 }
