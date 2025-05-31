@@ -24,6 +24,7 @@ interface Product {
   name: string;
   status: 'not_purchased' | 'selected' | 'purchased';
   establishment?: string;
+  markedForOtherLocation?: boolean;
 }
 
 interface Order {
@@ -74,7 +75,8 @@ export default function BuyForMeOrder() {
       id: index + 1,
       name: item,
       status: 'not_purchased' as const,
-      establishment: mockOrder.estabelecimento
+      establishment: mockOrder.estabelecimento,
+      markedForOtherLocation: false
     }));
     
     setProducts(initialProducts);
@@ -86,8 +88,32 @@ export default function BuyForMeOrder() {
     ));
   };
 
+  const toggleOtherLocation = (productId: number) => {
+    setProducts(prev => prev.map(product => 
+      product.id === productId 
+        ? { ...product, markedForOtherLocation: !product.markedForOtherLocation }
+        : product
+    ));
+  };
+
   const getProductsByStatus = (status: 'not_purchased' | 'selected' | 'purchased') => {
     return products.filter(product => product.status === status);
+  };
+
+  const getNotPurchasedNormalLocation = () => {
+    return products.filter(product => 
+      product.status === 'not_purchased' && !product.markedForOtherLocation
+    );
+  };
+
+  const getNotPurchasedOtherLocation = () => {
+    return products.filter(product => 
+      product.status === 'not_purchased' && product.markedForOtherLocation
+    );
+  };
+
+  const hasProductsMarkedForOtherLocation = () => {
+    return products.some(product => product.markedForOtherLocation);
   };
 
   const getTotalSelected = () => {
@@ -203,7 +229,7 @@ export default function BuyForMeOrder() {
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-white p-3 rounded-lg text-center border-2 border-red-200">
             <div className="text-2xl font-bold text-red-600">{getProductsByStatus('not_purchased').length}</div>
-            <div className="text-sm text-gray-600">Não Comprados</div>
+            <div className="text-sm text-gray-600">Itens</div>
           </div>
           <div className="bg-white p-3 rounded-lg text-center border-2 border-yellow-200">
             <div className="text-2xl font-bold text-yellow-600">{getProductsByStatus('selected').length}</div>
@@ -248,7 +274,7 @@ export default function BuyForMeOrder() {
                 : 'text-gray-600 hover:text-gray-800'
             }`}
           >
-            Não Comprados ({getProductsByStatus('not_purchased').length})
+            Itens ({getProductsByStatus('not_purchased').length})
           </button>
           <button
             onClick={() => setActiveTab('selected')}
@@ -273,66 +299,139 @@ export default function BuyForMeOrder() {
         </div>
 
         {/* Product Lists */}
-        <div className="space-y-3">
-          {getProductsByStatus(activeTab).map((product) => (
-            <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-800">{product.name}</h3>
-                  {product.establishment && (
-                    <p className="text-sm text-gray-500 mt-1">
-                      Estabelecimento: {product.establishment}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="flex gap-2">
-                  {activeTab === 'not_purchased' && (
-                    <>
-                      <button
-                        onClick={() => moveProduct(product.id, 'selected')}
-                        className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
-                        title="Adicionar ao carrinho"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={changeEstablishment}
-                        className="px-3 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors text-xs"
-                      >
-                        Outro Local
-                      </button>
-                    </>
-                  )}
-                  
-                  {activeTab === 'selected' && (
-                    <>
-                      <button
-                        onClick={() => moveProduct(product.id, 'not_purchased')}
-                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        title="Remover do carrinho"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </>
-                  )}
-                  
-                  {activeTab === 'purchased' && (
-                    <div className="flex items-center gap-2 text-green-600">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span className="text-sm font-medium">Comprado</span>
+        <div className="space-y-4">
+          {activeTab === 'not_purchased' ? (
+            <>
+              {/* Lista Normal - só mostra se tiver itens não marcados para outro local */}
+              {getNotPurchasedNormalLocation().length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="font-medium text-gray-700 flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4" />
+                    Estabelecimento Atual ({getNotPurchasedNormalLocation().length})
+                  </h3>
+                  {getNotPurchasedNormalLocation().map((product) => (
+                    <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-800">{product.name}</h3>
+                          <p className="text-sm text-gray-500 mt-1">
+                            Estabelecimento: {currentEstablishment}
+                          </p>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => moveProduct(product.id, 'selected')}
+                            className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                            title="Adicionar ao carrinho"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => toggleOtherLocation(product.id)}
+                            className="px-3 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors text-xs"
+                          >
+                            Outro Local
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              </div>
-            </div>
-          ))}
-          
-          {getProductsByStatus(activeTab).length === 0 && (
-            <div className="text-center py-8 text-gray-500">
-              <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Nenhum item nesta categoria</p>
-            </div>
+              )}
+
+              {/* Lista Outro Local - só mostra se tiver itens marcados */}
+              {hasProductsMarkedForOtherLocation() && getNotPurchasedOtherLocation().length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="font-medium text-blue-700 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Outro Estabelecimento ({getNotPurchasedOtherLocation().length})
+                  </h3>
+                  {getNotPurchasedOtherLocation().map((product) => (
+                    <div key={product.id} className="bg-blue-50 p-4 rounded-lg shadow-sm border border-blue-200">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-medium text-gray-800">{product.name}</h3>
+                          <p className="text-sm text-blue-600 mt-1">
+                            Para comprar em outro local
+                          </p>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => moveProduct(product.id, 'selected')}
+                            className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                            title="Adicionar ao carrinho"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => toggleOtherLocation(product.id)}
+                            className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-colors text-xs"
+                          >
+                            Voltar
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Mensagem quando não há itens */}
+              {getProductsByStatus('not_purchased').length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>Nenhum item para comprar</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* Outras abas (Selecionados e Comprados) mantêm comportamento original */}
+              {getProductsByStatus(activeTab).map((product) => (
+                <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-800">{product.name}</h3>
+                      {product.establishment && (
+                        <p className="text-sm text-gray-500 mt-1">
+                          Estabelecimento: {product.establishment}
+                        </p>
+                      )}
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      {activeTab === 'selected' && (
+                        <>
+                          <button
+                            onClick={() => moveProduct(product.id, 'not_purchased')}
+                            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                            title="Remover do carrinho"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </>
+                      )}
+                      
+                      {activeTab === 'purchased' && (
+                        <div className="flex items-center gap-2 text-green-600">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span className="text-sm font-medium">Comprado</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {getProductsByStatus(activeTab).length === 0 && (
+                <div className="text-center py-8 text-gray-500">
+                  <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>Nenhum item nesta categoria</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
