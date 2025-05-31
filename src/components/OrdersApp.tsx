@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  Menu, 
-  Bell, 
   ChevronDown,
   ChevronUp,
   DollarSign,
@@ -21,6 +19,7 @@ import {
   Package
 } from "lucide-react";
 import { BottomNavbar } from "./BottomNavbar";
+import { TopHeader } from "./TopHeader";
 
 export default function OrdersApp() {
   const navigate = useNavigate();
@@ -148,22 +147,7 @@ export default function OrdersApp() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
-        {/* Navbar Superior */}
-        <div className="flex items-center justify-between mb-4">
-          <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm">
-            <Menu className="w-6 h-6 text-white" />
-          </button>
-          <h1 className="text-white text-xl font-bold">Meus Pedidos</h1>
-          <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm relative">
-            <Bell className="w-6 h-6 text-white" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-          </button>
-        </div>
-        
-        {/* Saudação */}
-        <div className="mb-4">
-          <p className="text-blue-100 text-sm">Gerencie seus pedidos, Lucas</p>
-        </div>
+        <TopHeader title="Meus Pedidos" subtitle="Gerencie seus pedidos, Lucas" />
 
         {/* Dashboard Card Recolhível */}
         <div className="bg-white bg-opacity-15 backdrop-blur-sm rounded-xl text-white overflow-hidden">

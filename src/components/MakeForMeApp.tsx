@@ -1,8 +1,6 @@
 
 import { useState } from "react";
 import { 
-  Menu, 
-  Bell, 
   Briefcase
 } from "lucide-react";
 import { CreateOrderModal } from "./CreateOrderModal";
@@ -10,6 +8,7 @@ import { OrderDetailsModal } from "./OrderDetailsModal";
 import { OrderCard } from "./OrderCard";
 import { FilterBar } from "./FilterBar";
 import { BottomNavbar } from "./BottomNavbar";
+import { TopHeader } from "./TopHeader";
 
 export default function MakeForMeApp() {
   const [activeFilter, setActiveFilter] = useState("todos");
@@ -77,22 +76,7 @@ export default function MakeForMeApp() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
-        {/* Navbar Superior */}
-        <div className="flex items-center justify-between mb-4">
-          <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
-            <Menu className="w-6 h-6 text-white" />
-          </button>
-          <h1 className="text-white text-xl font-bold">MakeForMe</h1>
-          <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all relative">
-            <Bell className="w-6 h-6 text-white" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-          </button>
-        </div>
-        
-        {/* Saudação */}
-        <div className="mb-4">
-          <p className="text-blue-100 text-sm">Pronto para trabalhar, Lucas?</p>
-        </div>
+        <TopHeader title="MakeForMe" subtitle="Pronto para trabalhar, Lucas?" />
 
         {/* Card de Serviços em Andamento */}
         <div 
