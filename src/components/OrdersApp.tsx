@@ -26,6 +26,10 @@ export default function OrdersApp() {
   const [isDashboardExpanded, setIsDashboardExpanded] = useState(true);
   const [activeOrderTab, setActiveOrderTab] = useState("todos");
   const [activeFilter, setActiveFilter] = useState("maior-prioridade");
+  const [startedOrders, setStartedOrders] = useState<Set<number>>(() => {
+    const stored = localStorage.getItem('startedOrders');
+    return new Set(stored ? JSON.parse(stored) : []);
+  });
 
   // Dados do dashboard
   const dashboardData = {
@@ -143,9 +147,21 @@ export default function OrdersApp() {
     }
   };
 
-    const handleViewOrderDetails = (pedido) => {
-        navigate(`/BuyForMe/${pedido.id}`);
-    };
+  const handleExecuteOrder = (pedido) => {
+    // Marcar pedido como iniciado
+    setStartedOrders(prev => {
+      const newSet = new Set(prev).add(pedido.id);
+      localStorage.setItem('startedOrders', JSON.stringify([...newSet]));
+      return newSet;
+    });
+
+    if (pedido.tipo === "compra") {
+      navigate(`/BuyForMe/${pedido.id}`);
+    } else {
+      // Navegar para página de serviço quando estiver pronta
+      console.log("Executando serviço:", pedido);
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -290,8 +306,9 @@ export default function OrdersApp() {
               key={pedido.id} 
               pedido={pedido} 
               activeTab={activeOrderTab} 
-              onViewDetails={() => handleViewOrderDetails(pedido)}
+              onViewDetails={() => handleExecuteOrder(pedido)}
               showExecuteButton={true}
+              isStarted={startedOrders.has(pedido.id)}
             />
           ))}
         </div>
@@ -312,7 +329,7 @@ export default function OrdersApp() {
   );
 }
 
-const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
+const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton, isStarted }) => {
   const getUrgenciaColor = (urgencia) => {
       switch(urgencia) {
         case "Alta": return "bg-red-100 text-red-800";
@@ -321,7 +338,7 @@ const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
         default: return "bg-gray-100 text-gray-800";
       }
     };
-  
+
     const getStatusColor = (status) => {
       switch(status) {
         case "aceito": return "bg-blue-100 text-blue-800";
@@ -331,7 +348,7 @@ const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
         default: return "bg-gray-100 text-gray-800";
       }
     };
-  
+
     const getStatusLabel = (status) => {
       switch(status) {
         case "aceito": return "Aceito";
@@ -430,7 +447,7 @@ const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
                       onClick={onViewDetails}
                       className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                   >
-                      {pedido.tipo === "compra" ? "Iniciar compras" : "Iniciar serviço"}
+                      {isStarted ? (pedido.tipo === "compra" ? "Continuar compra" : "Continuar serviço") : (pedido.tipo === "compra" ? "Iniciar compra" : "Iniciar serviço")}
                   </button>
               )}
               {pedido.status === "aceito" && !showExecuteButton && (

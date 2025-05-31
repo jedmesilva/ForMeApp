@@ -86,6 +86,13 @@ export default function BuyForMeOrder() {
     setOrder(mockOrder);
     setCurrentEstablishment(mockOrder.estabelecimento);
     
+    // Marcar pedido como iniciado no localStorage
+    const startedOrders = JSON.parse(localStorage.getItem('startedOrders') || '[]');
+    if (!startedOrders.includes(mockOrder.id)) {
+      startedOrders.push(mockOrder.id);
+      localStorage.setItem('startedOrders', JSON.stringify(startedOrders));
+    }
+    
     const initialProducts = mockOrder.itens.map((item, index) => ({
       id: index + 1,
       name: item,

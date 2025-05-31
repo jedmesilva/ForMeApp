@@ -6,9 +6,10 @@ interface OrderCardProps {
   activeTab: 'buy' | 'make';
   onViewDetails?: () => void;
   showExecuteButton?: boolean;
+  isStarted?: boolean;
 }
 
-export function OrderCard({ pedido, activeTab, onViewDetails, showExecuteButton = false }: OrderCardProps) {
+export function OrderCard({ pedido, activeTab, onViewDetails, showExecuteButton = false, isStarted = false }: OrderCardProps) {
   const navigate = useNavigate();
 
   const getUrgenciaColor = (urgencia: string) => {
@@ -109,7 +110,22 @@ export function OrderCard({ pedido, activeTab, onViewDetails, showExecuteButton 
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
           >
             <Play className="w-4 h-4" />
-            Iniciar compras
+            {isStarted ? "Continuar compras" : "Iniciar compras"}
+          </button>
+        </div>
+      )}
+
+      {showExecuteButton && activeTab === 'make' && (
+        <div className="flex justify-end">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              // navigate para página de serviço quando existir
+            }}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
+          >
+            <Play className="w-4 h-4" />
+            {isStarted ? "Continuar serviço" : "Iniciar serviço"}
           </button>
         </div>
       )}
