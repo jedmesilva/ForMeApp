@@ -1,13 +1,16 @@
-
-import { MapPin, Clock, DollarSign, Briefcase } from "lucide-react";
+import { MapPin, Clock, DollarSign, Briefcase, Eye, Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface OrderCardProps {
   pedido: any;
-  activeTab: string;
+  activeTab: 'buy' | 'make';
   onViewDetails?: () => void;
+  showExecuteButton?: boolean;
 }
 
-export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) {
+export function OrderCard({ pedido, activeTab, onViewDetails, showExecuteButton = false }: OrderCardProps) {
+  const navigate = useNavigate();
+
   const getUrgenciaColor = (urgencia: string) => {
     switch(urgencia) {
       case "Muito Alta": return "bg-red-100 text-red-800";
@@ -31,7 +34,7 @@ export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) 
               {pedido.urgencia}
             </span>
           </div>
-          
+
           {activeTab === "buy" ? (
             <>
               {/* Estabelecimento melhorado */}
@@ -41,7 +44,7 @@ export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) 
                   <span className="text-gray-500"> • {pedido.estabelecimentoEndereco}</span>
                 )}
               </div>
-              
+
               {/* Região do cliente e distância */}
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                 <MapPin className="w-4 h-4" />
@@ -61,7 +64,7 @@ export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) 
                 <Briefcase className="w-4 h-4" />
                 <span>{pedido.categoria}</span>
               </div>
-              
+
               {/* Região do cliente e distância */}
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                 <MapPin className="w-4 h-4" />
@@ -69,25 +72,25 @@ export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) 
                 <span>•</span>
                 <span>{pedido.distancia}km</span>
               </div>
-              
+
               <div className="text-gray-700 mb-2">
                 <span className="font-medium">Serviço:</span> {pedido.servico}
               </div>
             </>
           )}
-          
+
           <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
             <div className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
               <span>{pedido.tempo}</span>
             </div>
           </div>
-          
+
           {pedido.observacoes && (
             <p className="text-sm text-gray-600 italic">"{pedido.observacoes}"</p>
           )}
         </div>
-        
+
         <div className="text-right ml-4">
           <div className="flex items-center gap-1 text-blue-600 font-bold text-lg">
             <DollarSign className="w-4 h-4" />
@@ -95,10 +98,25 @@ export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) 
           </div>
         </div>
       </div>
-      
-      <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-all transform hover:scale-105 active:scale-95">
-        {activeTab === "buy" ? "Aceitar Pedido" : "Oferecer Serviço"}
-      </button>
+
+      <div className="flex gap-2">
+            <button 
+              onClick={onViewDetails}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+            >
+              <Eye className="w-4 h-4" />
+              Ver Detalhes
+            </button>
+            {showExecuteButton && activeTab === 'buy' && (
+              <button 
+                onClick={() => navigate(`/buyforme/${pedido.id}`)}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <Play className="w-4 h-4" />
+                Executar
+              </button>
+            )}
+          </div>
     </div>
   );
 }

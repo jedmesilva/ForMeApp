@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -144,6 +143,10 @@ export default function OrdersApp() {
     }
   };
 
+    const handleViewOrderDetails = (pedido) => {
+        navigate(`/BuyForMe/${pedido.id}`);
+    };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
@@ -283,111 +286,13 @@ export default function OrdersApp() {
         {/* Lista de Pedidos */}
         <div className="space-y-4">
           {getPedidosFiltrados().map((pedido) => (
-            <div key={pedido.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="font-semibold text-gray-800">
-                      {pedido.cliente || `Aceito por: ${pedido.aceito_por}`}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(pedido.status)}`}>
-                      {getStatusLabel(pedido.status)}
-                    </span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgenciaColor(pedido.urgencia)}`}>
-                      {pedido.urgencia}
-                    </span>
-                  </div>
-                  
-                  {pedido.tipo === "compra" ? (
-                    <>
-                      <div className="text-sm text-gray-700 mb-1">
-                        <span className="font-medium">{pedido.estabelecimento}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{pedido.endereco}</span>
-                        {pedido.distancia && (
-                          <>
-                            <span>•</span>
-                            <span>{pedido.distancia}km</span>
-                          </>
-                        )}
-                      </div>
-
-                      <div className="text-gray-700 mb-2">
-                        <span className="font-medium">{pedido.itens.length} {pedido.itens.length === 1 ? 'item' : 'itens'}</span>
-                        <span className="text-gray-500 ml-2">{pedido.itens.join(", ")}</span>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <Briefcase className="w-4 h-4" />
-                        <span>{pedido.categoria}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{pedido.endereco}</span>
-                        {pedido.distancia && (
-                          <>
-                            <span>•</span>
-                            <span>{pedido.distancia}km</span>
-                          </>
-                        )}
-                      </div>
-                      
-                      <div className="text-gray-700 mb-2">
-                        <span className="font-medium">Serviço:</span> {pedido.servico}
-                      </div>
-                    </>
-                  )}
-                  
-                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{pedido.tempo}</span>
-                    </div>
-                  </div>
-                  
-                  {pedido.observacoes && (
-                    <p className="text-sm text-gray-600 italic">"{pedido.observacoes}"</p>
-                  )}
-                </div>
-                
-                <div className="text-right ml-4">
-                  <div className="flex items-center gap-1 text-blue-600 font-bold text-lg">
-                    <DollarSign className="w-4 h-4" />
-                    <span>{pedido.valor.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Botões de ação baseado no status */}
-              <div className="flex gap-2">
-                {pedido.status === "aceito" && (
-                  <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                    Iniciar
-                  </button>
-                )}
-                {pedido.status === "em-andamento" && (
-                  <button className="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                    Finalizar
-                  </button>
-                )}
-                {pedido.status === "concluido" && (
-                  <button className="flex-1 bg-gray-100 text-gray-600 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
-                    Concluído
-                  </button>
-                )}
-                {pedido.status === "aguardando" && (
-                  <button className="flex-1 bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
-                    Aguardando aceite
-                  </button>
-                )}
-              </div>
-            </div>
+            <OrderCard 
+              key={pedido.id} 
+              pedido={pedido} 
+              activeTab={activeOrderTab} 
+              onViewDetails={() => handleViewOrderDetails(pedido)}
+              showExecuteButton={true}
+            />
           ))}
         </div>
 
@@ -406,3 +311,149 @@ export default function OrdersApp() {
     </div>
   );
 }
+
+const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
+  const getUrgenciaColor = (urgencia) => {
+      switch(urgencia) {
+        case "Alta": return "bg-red-100 text-red-800";
+        case "Média": return "bg-yellow-100 text-yellow-800";
+        case "Baixa": return "bg-green-100 text-green-800";
+        default: return "bg-gray-100 text-gray-800";
+      }
+    };
+  
+    const getStatusColor = (status) => {
+      switch(status) {
+        case "aceito": return "bg-blue-100 text-blue-800";
+        case "em-andamento": return "bg-orange-100 text-orange-800";
+        case "concluido": return "bg-green-100 text-green-800";
+        case "aguardando": return "bg-yellow-100 text-yellow-800";
+        default: return "bg-gray-100 text-gray-800";
+      }
+    };
+  
+    const getStatusLabel = (status) => {
+      switch(status) {
+        case "aceito": return "Aceito";
+        case "em-andamento": return "Em andamento";
+        case "concluido": return "Concluído";
+        case "aguardando": return "Aguardando";
+        default: return status;
+      }
+    };
+  return (
+      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
+          <div className="flex justify-between items-start mb-3">
+              <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                      <span className="font-semibold text-gray-800">
+                          {pedido.cliente || `Aceito por: ${pedido.aceito_por}`}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(pedido.status)}`}>
+                          {getStatusLabel(pedido.status)}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgenciaColor(pedido.urgencia)}`}>
+                          {pedido.urgencia}
+                      </span>
+                  </div>
+
+                  {pedido.tipo === "compra" ? (
+                      <>
+                          <div className="text-sm text-gray-700 mb-1">
+                              <span className="font-medium">{pedido.estabelecimento}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                              <MapPin className="w-4 h-4" />
+                              <span>{pedido.endereco}</span>
+                              {pedido.distancia && (
+                                  <>
+                                      <span>•</span>
+                                      <span>{pedido.distancia}km</span>
+                                  </>
+                              )}
+                          </div>
+
+                          <div className="text-gray-700 mb-2">
+                              <span className="font-medium">{pedido.itens.length} {pedido.itens.length === 1 ? 'item' : 'itens'}</span>
+                              <span className="text-gray-500 ml-2">{pedido.itens.join(", ")}</span>
+                          </div>
+                      </>
+                  ) : (
+                      <>
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                              <Briefcase className="w-4 h-4" />
+                              <span>{pedido.categoria}</span>
+                          </div>
+
+                          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                              <MapPin className="w-4 h-4" />
+                              <span>{pedido.endereco}</span>
+                              {pedido.distancia && (
+                                  <>
+                                      <span>•</span>
+                                      <span>{pedido.distancia}km</span>
+                                  </>
+                              )}
+                          </div>
+
+                          <div className="text-gray-700 mb-2">
+                              <span className="font-medium">Serviço:</span> {pedido.servico}
+                          </div>
+                      </>
+                  )}
+
+                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                      <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{pedido.tempo}</span>
+                      </div>
+                  </div>
+
+                  {pedido.observacoes && (
+                      <p className="text-sm text-gray-600 italic">"{pedido.observacoes}"</p>
+                  )}
+              </div>
+
+              <div className="text-right ml-4">
+                  <div className="flex items-center gap-1 text-blue-600 font-bold text-lg">
+                      <DollarSign className="w-4 h-4" />
+                      <span>{pedido.valor.toFixed(2)}</span>
+                  </div>
+              </div>
+          </div>
+
+          {/* Botões de ação baseado no status */}
+          <div className="flex gap-2">
+              {showExecuteButton && (
+                  <button
+                      onClick={onViewDetails}
+                      className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  >
+                      Executar
+                  </button>
+              )}
+              {pedido.status === "aceito" && !showExecuteButton && (
+                  <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                      Iniciar
+                  </button>
+              )}
+              {pedido.status === "em-andamento" && !showExecuteButton && (
+                  <button className="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors">
+                      Finalizar
+                  </button>
+              )}
+              {pedido.status === "concluido" && !showExecuteButton && (
+                  <button className="flex-1 bg-gray-100 text-gray-600 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
+                      Concluído
+                  </button>
+              )}
+              {pedido.status === "aguardando" && !showExecuteButton && (
+                  <button className="flex-1 bg-yellow-100 text-yellow-800 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
+                      Aguardando aceite
+                  </button>
+              )}
+          </div>
+      </div>
+  );
+};
