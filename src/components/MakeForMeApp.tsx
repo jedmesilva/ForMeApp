@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { CreateOrderModal } from "./CreateOrderModal";
 import { OrderDetailsModal } from "./OrderDetailsModal";
+import { ServiceDetailsModal } from "./ServiceDetailsModal";
 import { OrderCard } from "./OrderCard";
 import { FilterBar } from "./FilterBar";
 import { BottomNavbar } from "./BottomNavbar";
@@ -14,6 +15,14 @@ export default function MakeForMeApp() {
   const [activeFilter, setActiveFilter] = useState("todos");
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [showServiceDetails, setShowServiceDetails] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
+  // Função para abrir detalhes do serviço
+  const handleViewServiceDetails = (servico: any) => {
+    setSelectedService(servico);
+    setShowServiceDetails(true);
+  };
 
   // Dados simulados
   const pedidosAndamento = {
@@ -107,7 +116,12 @@ export default function MakeForMeApp() {
         {/* Lista de Serviços */}
         <div className="space-y-4">
           {pedidosServico.map((pedido) => (
-            <OrderCard key={pedido.id} pedido={pedido} activeTab="make" />
+            <OrderCard 
+              key={pedido.id} 
+              pedido={pedido} 
+              activeTab="make" 
+              onViewDetails={() => handleViewServiceDetails(pedido)}
+            />
           ))}
         </div>
       </div>
@@ -135,6 +149,15 @@ export default function MakeForMeApp() {
       )}
       {showOrderDetails && (
         <OrderDetailsModal onClose={() => setShowOrderDetails(false)} />
+      )}
+      {showServiceDetails && selectedService && (
+        <ServiceDetailsModal 
+          servico={selectedService}
+          onClose={() => {
+            setShowServiceDetails(false);
+            setSelectedService(null);
+          }}
+        />
       )}
     </div>
   );
