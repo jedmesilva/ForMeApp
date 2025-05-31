@@ -74,7 +74,7 @@ export function EstablishmentSearch({
             }
             setShowSuggestions(true);
           }}
-          className={`w-full bg-white bg-opacity-90 backdrop-blur-sm rounded-xl ${selectedEstablishmentData && selectedEstablishment !== "todos" ? 'pl-10' : 'pl-3'} pr-10 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:bg-white focus:shadow-lg transition-all`}
+          className={`w-full bg-white rounded-xl ${selectedEstablishmentData && selectedEstablishment !== "todos" ? 'pl-10' : 'pl-3'} pr-10 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:shadow-lg transition-all`}
           readOnly={selectedEstablishment !== "todos"}
         />
         
