@@ -190,62 +190,50 @@ export default function AccountApp() {
   };
 
   const CardsModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
-      <div className="bg-white h-full w-full flex flex-col">
-        <div className="flex-1 overflow-y-auto pb-28">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Meus Cartões</h2>
-              <button 
-                onClick={() => setShowCardsModal(false)}
-                className="p-2 rounded-lg hover:bg-gray-100"
-              >
-                <X className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
-            
-            <div className="space-y-4 mb-6">
-              {cartoesCadastrados.map((cartao) => (
-                <div key={cartao.id} className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-xl text-white relative">
-                  {cartao.principal && (
-                    <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
-                      Principal
-                    </div>
-                  )}
-                  <button 
-                    onClick={() => {
-                      // Função para excluir cartão
-                      console.log('Excluir cartão:', cartao.id);
-                    }}
-                    className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 p-1 rounded-full transition-colors"
-                  >
-                    <X className="w-4 h-4 text-white" />
-                  </button>
-                  <div className="mb-2 mt-6">
-                    <p className="text-blue-100 text-sm">{cartao.nome}</p>
-                  </div>
-                  <div className="text-lg font-mono mb-2">
-                    {cartao.numero}
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-blue-200">
-                      Válido até {cartao.validade}
-                    </span>
-                    <span className="text-lg">
-                      {getBandeiraIcon(cartao.bandeira)}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-              <Plus className="w-5 h-5" />
-              Adicionar novo cartão
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Meus Cartões</h2>
+            <button 
+              onClick={() => setShowCardsModal(false)}
+              className="p-2 rounded-lg hover:bg-gray-100"
+            >
+              <X className="w-5 h-5 text-gray-600" />
             </button>
           </div>
+          
+          <div className="space-y-4 mb-6">
+            {cartoesCadastrados.map((cartao) => (
+              <div key={cartao.id} className="bg-gradient-to-r from-blue-600 to-blue-700 p-4 rounded-xl text-white relative">
+                {cartao.principal && (
+                  <div className="absolute top-2 right-2 bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-medium">
+                    Principal
+                  </div>
+                )}
+                <div className="mb-2">
+                  <p className="text-blue-100 text-sm">{cartao.nome}</p>
+                </div>
+                <div className="text-lg font-mono mb-2">
+                  {cartao.numero}
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-blue-200">
+                    Válido até {cartao.validade}
+                  </span>
+                  <span className="text-lg">
+                    {getBandeiraIcon(cartao.bandeira)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+            <Plus className="w-5 h-5" />
+            Adicionar novo cartão
+          </button>
         </div>
-      </div>
       </div>
     </div>
   );
@@ -253,7 +241,7 @@ export default function AccountApp() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header Azul */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-6 pb-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 pt-12 pb-6">
         <TopHeader title="Minha Conta" subtitle={`Olá, ${userData.nome}`} />
 
         {/* Card de Saldo */}
