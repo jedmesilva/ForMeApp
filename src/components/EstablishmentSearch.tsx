@@ -40,12 +40,13 @@ export function EstablishmentSearch({
     <div className="relative">
       <p className="text-white text-sm mb-2">Filtrar por estabelecimento</p>
       <div className="relative">
-        {/* Logo do estabelecimento selecionado */}
-        {selectedEstablishmentData && selectedEstablishment !== "todos" && (
-          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-lg z-10">
-            {selectedEstablishmentData.logo}
-          </div>
-        )}
+        {/* Logo do estabelecimento selecionado ou ícone de loja padrão */}
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-lg z-10">
+          {selectedEstablishmentData && selectedEstablishment !== "todos" 
+            ? selectedEstablishmentData.logo 
+            : "🏪"
+          }
+        </div>
         
         <input
           type="text"
@@ -74,7 +75,7 @@ export function EstablishmentSearch({
             }
             setShowSuggestions(true);
           }}
-          className={`w-full bg-white rounded-xl ${selectedEstablishmentData && selectedEstablishment !== "todos" ? 'pl-10' : 'pl-3'} pr-10 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:shadow-lg transition-all`}
+          className="w-full bg-white rounded-xl pl-10 pr-10 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:shadow-lg transition-all"
           readOnly={selectedEstablishment !== "todos"}
         />
         
