@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Briefcase
 } from "lucide-react";
@@ -12,6 +13,7 @@ import { BottomNavbar } from "./BottomNavbar";
 import { TopHeader } from "./TopHeader";
 
 export default function MakeForMeApp() {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("todos");
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
@@ -128,7 +130,7 @@ export default function MakeForMeApp() {
 
       {/* Botão Flutuante */}
       <button 
-        onClick={() => setShowCreateOrder(true)}
+        onClick={() => navigate('/create?type=make')}
         className="fixed bottom-32 right-6 bg-blue-600 hover:bg-blue-700 p-4 rounded-full shadow-2xl text-white transition-all z-40 transform hover:scale-110 active:scale-95"
       >
         <div className="flex items-center justify-center">
