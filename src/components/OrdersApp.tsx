@@ -251,7 +251,7 @@ export default function OrdersApp() {
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
-              Meus Pedidos
+              Enviados
             </button>
           </div>
         </div>
