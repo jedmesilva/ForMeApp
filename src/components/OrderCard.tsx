@@ -4,9 +4,10 @@ import { MapPin, Clock, DollarSign, Briefcase } from "lucide-react";
 interface OrderCardProps {
   pedido: any;
   activeTab: string;
+  onViewDetails?: () => void;
 }
 
-export function OrderCard({ pedido, activeTab }: OrderCardProps) {
+export function OrderCard({ pedido, activeTab, onViewDetails }: OrderCardProps) {
   const getUrgenciaColor = (urgencia: string) => {
     switch(urgencia) {
       case "Muito Alta": return "bg-red-100 text-red-800";
@@ -18,7 +19,10 @@ export function OrderCard({ pedido, activeTab }: OrderCardProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1">
+    <div 
+      className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all transform hover:-translate-y-1 cursor-pointer"
+      onClick={onViewDetails}
+    >
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { CreateOrderModal } from "./CreateOrderModal";
 import { OrderDetailsModal } from "./OrderDetailsModal";
+import { OrderProductsModal } from "./OrderProductsModal";
 import { EstablishmentSearch } from "./EstablishmentSearch";
 import { OrderCard } from "./OrderCard";
 import { FilterBar } from "./FilterBar";
@@ -24,7 +25,15 @@ export default function BuyForMeApp() {
   const [activeFilter, setActiveFilter] = useState("todos");
   const [showCreateOrder, setShowCreateOrder] = useState(false);
   const [showOrderDetails, setShowOrderDetails] = useState(false);
+  const [showOrderProducts, setShowOrderProducts] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Função para abrir detalhes dos produtos
+  const handleViewOrderProducts = (pedido: any) => {
+    setSelectedOrder(pedido);
+    setShowOrderProducts(true);
+  };
 
   // Dados simulados
   const pedidosAndamento = {
@@ -133,7 +142,12 @@ export default function BuyForMeApp() {
         {/* Lista de Pedidos */}
         <div className="space-y-4">
           {pedidosCompra.map((pedido) => (
-            <OrderCard key={pedido.id} pedido={pedido} activeTab="buy" />
+            <OrderCard 
+              key={pedido.id} 
+              pedido={pedido} 
+              activeTab="buy" 
+              onViewDetails={() => handleViewOrderProducts(pedido)}
+            />
           ))}
         </div>
       </div>
