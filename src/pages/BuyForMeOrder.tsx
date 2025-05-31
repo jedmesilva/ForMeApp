@@ -174,7 +174,7 @@ export default function BuyForMeOrder() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-6 text-white">
         <div className="flex items-center gap-3 mb-4">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/orders')}
             className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
