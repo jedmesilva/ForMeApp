@@ -97,7 +97,7 @@ export default function BuyForMeApp() {
 
         {/* Card de Pedidos em Andamento */}
         <div 
-          className="bg-white bg-opacity-15 backdrop-blur-sm p-4 rounded-xl text-white cursor-pointer hover:bg-opacity-20 transition-all mb-6 transform hover:scale-105"
+          className="bg-white bg-opacity-15 backdrop-blur-sm p-4 rounded-xl text-white cursor-pointer hover:bg-opacity-20 transition-all mb-6"
           onClick={() => setShowOrderDetails(true)}
         >
           <div className="flex items-center justify-between">
