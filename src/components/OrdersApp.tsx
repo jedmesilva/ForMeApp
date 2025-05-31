@@ -16,7 +16,8 @@ import {
   ClipboardList,
   Briefcase,
   Star,
-  Package
+  Package,
+  ArrowDown
 } from "lucide-react";
 import { BottomNavbar } from "./BottomNavbar";
 import { TopHeader } from "./TopHeader";
@@ -185,14 +186,14 @@ export default function OrdersApp() {
               <div className="grid grid-cols-4 gap-4">
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
-                    <CheckCircle className="w-4 h-4" />
+                    <ArrowDown className="w-4 h-4" />
                   </div>
                   <p className="text-lg font-semibold">{dashboardData.pedidosAceitos}</p>
                   <p className="text-xs text-blue-100">Aceitos</p>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center mb-1">
-                    <Package className="w-4 h-4" />
+                    <CheckCircle className="w-4 h-4" />
                   </div>
                   <p className="text-lg font-semibold">{dashboardData.pedidosConcluidos}</p>
                   <p className="text-xs text-blue-100">Concluídos</p>
