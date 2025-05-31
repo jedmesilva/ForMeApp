@@ -17,8 +17,8 @@ export function OrderProductsModal({ pedido, onClose }: OrderProductsModalProps)
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl w-full h-full max-w-md max-h-screen flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white w-full h-full flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 text-white">
           <div className="flex items-center justify-between">
