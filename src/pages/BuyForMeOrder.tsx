@@ -361,7 +361,8 @@ export default function BuyForMeOrder() {
                       {getNotPurchasedNormalLocation().map((product) => (
                         <div 
                           key={product.id} 
-                          className="bg-white p-4 rounded-lg shadow-sm border"
+                          className="bg-white p-4 rounded-lg shadow-sm border cursor-pointer hover:bg-blue-50 transition-colors"
+                          onClick={() => moveProduct(product.id, 'selected')}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
@@ -408,7 +409,8 @@ export default function BuyForMeOrder() {
                       {getNotPurchasedOtherLocation().map((product) => (
                         <div 
                           key={product.id} 
-                          className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-200"
+                          className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-200 cursor-pointer hover:bg-blue-50 transition-colors"
+                          onClick={() => moveProduct(product.id, 'selected')}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
