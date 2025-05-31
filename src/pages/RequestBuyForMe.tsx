@@ -270,26 +270,28 @@ export default function RequestBuyForMe() {
                     </button>
                   </div>
 
-                  {/* Image Upload */}
+                  {/* Camera Upload */}
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Ou envie uma foto/arquivo da lista
+                      Ou tire uma foto da lista
                     </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <input
-                        type="file"
-                        accept="image/*,.txt"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                        id="file-upload"
-                      />
-                      <label htmlFor="file-upload" className="cursor-pointer">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                        <p className="text-sm text-gray-600">
-                          {imageFile ? imageFile.name : 'Clique para enviar arquivo ou foto'}
-                        </p>
-                      </label>
-                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="camera-upload"
+                    />
+                    <label htmlFor="camera-upload">
+                      <button
+                        type="button"
+                        className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Camera className="w-5 h-5" />
+                        {imageFile ? `Foto selecionada: ${imageFile.name}` : 'Tirar foto da lista'}
+                      </button>
+                    </label>
                   </div>
                 </div>
               )}
@@ -327,7 +329,7 @@ export default function RequestBuyForMe() {
                         </button>
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="w-6 h-6 bg-red-100 rounded text-red-600 hover:bg-red-200 transition-colors ml-2"
+                          className="w-6 h-6 bg-red-100 rounded text-red-600 hover:bg-red-200 transition-colors ml-2 flex items-center justify-center"
                         >
                           <X className="w-3 h-3" />
                         </button>
