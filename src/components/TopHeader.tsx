@@ -10,7 +10,7 @@ export function TopHeader({ title, subtitle }: TopHeaderProps) {
   return (
     <>
       {/* Navbar Superior */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
           <Menu className="w-6 h-6 text-white" />
         </button>
@@ -25,7 +25,7 @@ export function TopHeader({ title, subtitle }: TopHeaderProps) {
       
       {/* Saudação */}
       {subtitle && (
-        <div className="mb-4">
+        <div className="mb-2">
           <p className="text-blue-100 text-sm">{subtitle}</p>
         </div>
       )}
