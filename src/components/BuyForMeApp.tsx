@@ -21,7 +21,6 @@ import { BottomNavbar } from "./BottomNavbar";
 import { TopHeader } from "./TopHeader";
 
 export default function BuyForMeApp() {
-  const navigate = useNavigate();
   const [selectedEstablishment, setSelectedEstablishment] = useState("todos");
   const [activeFilter, setActiveFilter] = useState("todos");
   const [showCreateOrder, setShowCreateOrder] = useState(false);
@@ -155,8 +154,8 @@ export default function BuyForMeApp() {
 
       {/* Botão Flutuante */}
       <button 
-        onClick={() => navigate('/create')}
-        className="fixed bottom-32 right-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 p-4 rounded-full shadow-2xl text-white transition-all z-40 transform hover:scale-110 active:scale-95"
+        onClick={() => setShowCreateOrder(true)}
+        className="fixed bottom-32 right-6 bg-blue-600 hover:bg-blue-700 p-4 rounded-full shadow-2xl text-white transition-all z-40 transform hover:scale-110 active:scale-95"
       >
         <div className="flex items-center justify-center">
           <ShoppingBag className="w-6 h-6" />
