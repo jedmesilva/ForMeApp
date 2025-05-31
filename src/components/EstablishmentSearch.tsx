@@ -44,7 +44,7 @@ export function EstablishmentSearch({
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-lg z-10">
           {selectedEstablishmentData && selectedEstablishment !== "todos" 
             ? selectedEstablishmentData.logo 
-            : "🏪"
+            : "Store"
           }
         </div>
         
