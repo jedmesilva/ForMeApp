@@ -430,12 +430,12 @@ const OrderCard = ({ pedido, activeTab, onViewDetails, showExecuteButton }) => {
                       onClick={onViewDetails}
                       className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
                   >
-                      Iniciar compras
+                      {pedido.tipo === "compra" ? "Iniciar compras" : "Iniciar serviço"}
                   </button>
               )}
               {pedido.status === "aceito" && !showExecuteButton && (
                   <button className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
-                      Iniciar
+                      {pedido.tipo === "compra" ? "Iniciar compras" : "Iniciar serviço"}
                   </button>
               )}
               {pedido.status === "em-andamento" && !showExecuteButton && (
