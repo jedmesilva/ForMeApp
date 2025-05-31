@@ -176,7 +176,7 @@ export default function RequestBuyForMe() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 space-y-6">
+      <div className="flex-1 p-4 pb-24 space-y-6">
         {/* Step 1 - Lista de Compras */}
         {currentStep === 1 && (
           <>
@@ -532,8 +532,11 @@ export default function RequestBuyForMe() {
           </div>
         )}
 
-        {/* Navigation Buttons */}
-        <div className="flex gap-3 pb-6">
+        </div>
+
+      {/* Fixed Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="flex gap-3">
           {currentStep > 1 && (
             <button
               onClick={prevStep}
