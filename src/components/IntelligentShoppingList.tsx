@@ -476,53 +476,49 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
         </div>
 
         {/* Botões de Navegação */}
-        <div className="flex items-center justify-around px-2 sm:px-4 py-2 sm:py-3 bg-gray-50 border-t">
+        <div className="flex items-center justify-around px-2 sm:px-4 py-3 bg-gray-50 border-t">
           <button
             onClick={() => setActiveTab('search')}
-            className={`flex flex-col items-center py-1 sm:py-2 px-1 sm:px-3 rounded-lg transition-all transform hover:scale-105 min-w-0 flex-1 max-w-[80px] sm:max-w-none ${
+            className={`flex items-center justify-center p-3 rounded-lg transition-all transform hover:scale-105 ${
               activeTab === 'search' 
                 ? 'bg-blue-50 text-blue-600 shadow-sm' 
                 : 'text-gray-600'
             }`}
           >
-            <Search className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-            <span className="text-[10px] sm:text-xs font-medium leading-tight">Procurar</span>
+            <Search className="w-6 h-6" />
           </button>
 
           <button
             onClick={() => setActiveTab('audio')}
-            className={`flex flex-col items-center py-1 sm:py-2 px-1 sm:px-3 rounded-lg transition-all transform hover:scale-105 min-w-0 flex-1 max-w-[80px] sm:max-w-none ${
+            className={`flex items-center justify-center p-3 rounded-lg transition-all transform hover:scale-105 ${
               activeTab === 'audio' 
                 ? 'bg-blue-50 text-blue-600 shadow-sm' 
                 : 'text-gray-600'
             }`}
           >
-            <Mic className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-            <span className="text-[10px] sm:text-xs font-medium leading-tight">Áudio</span>
+            <Mic className="w-6 h-6" />
           </button>
 
           <button
             onClick={() => setActiveTab('photo')}
-            className={`flex flex-col items-center py-1 sm:py-2 px-1 sm:px-3 rounded-lg transition-all transform hover:scale-105 min-w-0 flex-1 max-w-[80px] sm:max-w-none ${
+            className={`flex items-center justify-center p-3 rounded-lg transition-all transform hover:scale-105 ${
               activeTab === 'photo' 
                 ? 'bg-blue-50 text-blue-600 shadow-sm' 
                 : 'text-gray-600'
             }`}
           >
-            <Camera className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-            <span className="text-[10px] sm:text-xs font-medium leading-tight">Foto</span>
+            <Camera className="w-6 h-6" />
           </button>
 
           <button
             onClick={() => setActiveTab('text')}
-            className={`flex flex-col items-center py-1 sm:py-2 px-1 sm:px-3 rounded-lg transition-all transform hover:scale-105 min-w-0 flex-1 max-w-[80px] sm:max-w-none ${
+            className={`flex items-center justify-center p-3 rounded-lg transition-all transform hover:scale-105 ${
               activeTab === 'text' 
                 ? 'bg-blue-50 text-blue-600 shadow-sm' 
                 : 'text-gray-600'
             }`}
           >
-            <FileText className="w-4 h-4 sm:w-5 sm:h-5 mb-0.5 sm:mb-1" />
-            <span className="text-[10px] sm:text-xs font-medium leading-tight">Texto</span>
+            <FileText className="w-6 h-6" />
           </button>
         </div>
       </div>
