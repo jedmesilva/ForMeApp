@@ -1,27 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Mic, Camera, FileText, Plus, MapPin, ShoppingCart, X, Minus } from 'lucide-react';
+import { Search, Mic, Camera, FileText, Plus, MapPin, ShoppingCart, X, Minus, ArrowLeft } from 'lucide-react';
 
 interface Product {
   id: string;
   name: string;
-  category: string;
-  price: number;
   quantity: number;
+  addedBy: 'search' | 'text' | 'audio' | 'photo';
 }
 
 interface Store {
   id: string;
   name: string;
   address: string;
-  logo: string;
 }
 
-interface ShoppingListCreatorProps {
+interface IntelligentShoppingListProps {
   onSave?: (products: Product[], selectedStore: string) => void;
   onCancel?: () => void;
+  availableStores?: Store[];
 }
 
-const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCancel }) => {
+const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({ 
+  onSave, 
+  onCancel, 
+  availableStores = [] 
+}) => {
   const [selectedStore, setSelectedStore] = useState('');
   const [activeTab, setActiveTab] = useState<'search' | 'audio' | 'photo' | 'text'>('search');
   const [searchQuery, setSearchQuery] = useState('');
@@ -32,33 +35,22 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
   const [isRecording, setIsRecording] = useState(false);
   const [audioTranscript, setAudioTranscript] = useState('');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
-  const [highlightedProducts, setHighlightedProducts] = useState<Set<string>>(new Set());
+  const [isProcessingImage, setIsProcessingImage] = useState(false);
   
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock data para demonstração
-  const stores: Store[] = [
-    { id: '1', name: 'Supermercado Extra', address: 'Rua das Flores, 123', logo: '🛒' },
-    { id: '2', name: 'Carrefour', address: 'Av. Paulista, 456', logo: '🏪' },
-    { id: '3', name: 'Pão de Açúcar', address: 'Rua Augusta, 789', logo: '🏬' },
-    { id: '4', name: 'Padaria do João', address: 'Rua das Palmeiras, 321', logo: '🥖' }
+  // Lista básica de produtos comuns para sugestões
+  const commonProducts = [
+    'Arroz', 'Feijão', 'Açúcar', 'Óleo', 'Leite', 'Ovos', 'Pão', 'Manteiga',
+    'Queijo', 'Presunto', 'Banana', 'Maçã', 'Tomate', 'Cebola', 'Alho', 'Batata',
+    'Frango', 'Carne moída', 'Peixe', 'Iogurte', 'Detergente', 'Sabão', 'Papel higiênico'
   ];
 
-  const mockProducts = [
-    'Arroz branco 5kg', 'Feijão preto 1kg', 'Açúcar cristal 1kg', 'Óleo de soja 900ml',
-    'Leite integral 1L', 'Ovos brancos dúzia', 'Pão de forma integral', 'Manteiga sem sal',
-    'Queijo mussarela fatiado', 'Presunto magro fatiado', 'Banana prata kg', 'Maçã gala kg',
-    'Tomate italiano kg', 'Cebola branca kg', 'Alho roxo kg', 'Batata inglesa kg',
-    'Frango inteiro kg', 'Carne moída kg', 'Peixe tilápia kg', 'Iogurte natural',
-    'Detergente neutro', 'Sabão em pó', 'Papel higiênico 12 rolos', 'Shampoo anticaspa',
-    'Café em pó 500g', 'Biscoito recheado', 'Refrigerante 2L', 'Água mineral 1,5L'
-  ];
-
-  // Função para filtrar sugestões
+  // Filtrar sugestões baseadas na entrada do usuário
   const filterSuggestions = (query: string) => {
     if (!query.trim()) return [];
-    return mockProducts.filter(product => 
+    return commonProducts.filter(product => 
       product.toLowerCase().includes(query.toLowerCase())
     ).slice(0, 6);
   };
@@ -82,41 +74,21 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
     }
   }, [searchQuery, textInput, activeTab]);
 
-  // Processar texto para destacar produtos
-  const processTextForHighlighting = (text: string) => {
-    const lines = text.split('\n');
-    const highlighted = new Set<string>();
-    
-    lines.forEach((line, index) => {
-      const trimmed = line.trim();
-      if (trimmed) {
-        const foundProduct = mockProducts.find(product => 
-          product.toLowerCase().includes(trimmed.toLowerCase()) ||
-          trimmed.toLowerCase().includes(product.toLowerCase().split(' ')[0])
-        );
-        if (foundProduct) {
-          highlighted.add(`line-${index}`);
-        }
-      }
-    });
-    
-    setHighlightedProducts(highlighted);
-  };
-
   // Adicionar produto à lista
-  const addProduct = (productName: string) => {
-    const existingProduct = selectedProducts.find(p => p.name === productName);
+  const addProduct = (productName: string, addedBy: Product['addedBy'] = 'search') => {
+    const existingProduct = selectedProducts.find(p => p.name.toLowerCase() === productName.toLowerCase());
     if (existingProduct) {
       setSelectedProducts(prev => prev.map(p => 
-        p.name === productName ? { ...p, quantity: p.quantity + 1 } : p
+        p.name.toLowerCase() === productName.toLowerCase() 
+          ? { ...p, quantity: p.quantity + 1 } 
+          : p
       ));
     } else {
       const newProduct: Product = {
         id: Date.now().toString(),
-        name: productName,
-        category: 'Geral',
-        price: Math.random() * 20 + 5, // Preço aleatório para demonstração
-        quantity: 1
+        name: productName.trim(),
+        quantity: 1,
+        addedBy
       };
       setSelectedProducts(prev => [...prev, newProduct]);
     }
@@ -138,36 +110,19 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
     ));
   };
 
-  // Lidar com tecla Enter na busca
-  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && suggestions.length > 0) {
-      e.preventDefault();
-      addProduct(suggestions[selectedSuggestion]);
-      setSearchQuery('');
-      setSuggestions([]);
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedSuggestion(prev => 
-        prev < suggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setSelectedSuggestion(prev => 
-        prev > 0 ? prev - 1 : suggestions.length - 1
-      );
-    }
-  };
-
-  // Lidar com teclas no textarea
-  const handleTextKeyDown = (e: React.KeyboardEvent) => {
+  // Navegação com teclado para sugestões
+  const handleKeyDown = (e: React.KeyboardEvent, isTextArea = false) => {
     if (suggestions.length > 0) {
-      if (e.key === 'Enter' && !e.shiftKey) {
+      if (e.key === 'Enter' && !isTextArea) {
+        e.preventDefault();
+        addProduct(suggestions[selectedSuggestion]);
+        setSearchQuery('');
+        setSuggestions([]);
+      } else if (e.key === 'Enter' && isTextArea && !e.shiftKey) {
         e.preventDefault();
         const lines = textInput.split('\n');
         lines[lines.length - 1] = suggestions[selectedSuggestion];
-        const newText = lines.join('\n') + '\n';
-        setTextInput(newText);
-        processTextForHighlighting(newText);
+        setTextInput(lines.join('\n') + '\n');
         setSuggestions([]);
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
@@ -190,24 +145,20 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
       lines.forEach(line => {
         const trimmed = line.trim();
         if (trimmed) {
-          const foundProduct = mockProducts.find(product => 
-            product.toLowerCase().includes(trimmed.toLowerCase()) ||
-            trimmed.toLowerCase().includes(product.toLowerCase().split(' ')[0])
-          ) || trimmed;
-          addProduct(foundProduct);
+          addProduct(trimmed, 'text');
         }
       });
       setTextInput('');
-      setHighlightedProducts(new Set());
     }
   };
 
-  // Simular gravação de áudio
+  // Simular gravação de áudio (aqui seria integrado com API de speech-to-text)
   const toggleRecording = () => {
     setIsRecording(!isRecording);
     if (!isRecording) {
+      // Simular início da gravação
       setTimeout(() => {
-        setAudioTranscript('Preciso de leite, pão, ovos e queijo para o café da manhã');
+        setAudioTranscript('Leite, pão, ovos e queijo');
         setIsRecording(false);
       }, 3000);
     }
@@ -216,21 +167,17 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
   // Processar áudio transcrito
   const processAudio = () => {
     if (audioTranscript) {
-      const items = audioTranscript.replace(/,/g, '\n').split('\n');
+      const items = audioTranscript.split(/[,\s]+/).filter(item => item.trim());
       items.forEach(item => {
-        const trimmed = item.trim();
-        if (trimmed) {
-          const foundProduct = mockProducts.find(product => 
-            product.toLowerCase().includes(trimmed.toLowerCase())
-          ) || trimmed;
-          addProduct(foundProduct);
+        if (item.trim()) {
+          addProduct(item.trim(), 'audio');
         }
       });
       setAudioTranscript('');
     }
   };
 
-  // Lidar com upload de imagem
+  // Upload e processamento de imagem
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -238,13 +185,14 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
       reader.onload = (e) => {
         const result = e.target?.result as string;
         setUploadedImage(result);
+        setIsProcessingImage(true);
         
-        // Simular OCR
+        // Simular processamento OCR (aqui seria integrado com API de OCR)
         setTimeout(() => {
-          const mockExtractedText = 'Leite\nPão\nQueijo\nPresunto\nTomate';
-          const items = mockExtractedText.split('\n');
-          items.forEach(item => addProduct(item.trim()));
+          const extractedItems = ['Leite', 'Pão', 'Queijo', 'Presunto'];
+          extractedItems.forEach(item => addProduct(item, 'photo'));
           setUploadedImage(null);
+          setIsProcessingImage(false);
         }, 2000);
       };
       reader.readAsDataURL(file);
@@ -264,7 +212,7 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
                 placeholder="Buscar produtos..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
+                onKeyDown={(e) => handleKeyDown(e)}
                 className="flex-1 outline-none text-gray-700 placeholder-gray-400"
               />
             </div>
@@ -347,6 +295,7 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="w-full py-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors"
+                disabled={isProcessingImage}
               >
                 <Camera className="w-8 h-8 text-gray-400 mx-auto mb-2" />
                 <p className="text-gray-600 font-medium">Tirar foto ou enviar imagem</p>
@@ -356,7 +305,9 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
               {uploadedImage && (
                 <div className="mt-3">
                   <img src={uploadedImage} alt="Lista enviada" className="w-full h-32 object-cover rounded-lg" />
-                  <p className="text-sm text-blue-600 mt-2">Processando imagem...</p>
+                  <p className="text-sm text-blue-600 mt-2">
+                    {isProcessingImage ? 'Processando imagem...' : 'Imagem processada!'}
+                  </p>
                 </div>
               )}
             </div>
@@ -370,11 +321,8 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
               <textarea
                 ref={textareaRef}
                 value={textInput}
-                onChange={(e) => {
-                  setTextInput(e.target.value);
-                  processTextForHighlighting(e.target.value);
-                }}
-                onKeyDown={handleTextKeyDown}
+                onChange={(e) => setTextInput(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, true)}
                 placeholder="Digite sua lista de compras (um item por linha)"
                 className="w-full h-24 outline-none resize-none text-gray-700 placeholder-gray-400"
               />
@@ -398,9 +346,7 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
                     onClick={() => {
                       const lines = textInput.split('\n');
                       lines[lines.length - 1] = suggestion;
-                      const newText = lines.join('\n') + '\n';
-                      setTextInput(newText);
-                      processTextForHighlighting(newText);
+                      setTextInput(lines.join('\n') + '\n');
                       setSuggestions([]);
                     }}
                   >
@@ -431,7 +377,7 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
                 onClick={onCancel}
                 className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all"
               >
-                <X className="w-5 h-5 text-white" />
+                <ArrowLeft className="w-5 h-5 text-white" />
               </button>
             )}
             <div>
@@ -459,12 +405,12 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
           <select
             value={selectedStore}
             onChange={(e) => setSelectedStore(e.target.value)}
-            className="flex-1 bg-transparent outline-none text-white placeholder-blue-200"
+            className="flex-1 bg-transparent outline-none text-white"
           >
             <option value="" className="text-gray-800">Selecione o estabelecimento</option>
-            {stores.map(store => (
+            {availableStores.map(store => (
               <option key={store.id} value={store.id} className="text-gray-800">
-                {store.logo} {store.name} - {store.address}
+                {store.name} - {store.address}
               </option>
             ))}
           </select>
@@ -491,17 +437,8 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
                     <span className="font-medium text-gray-800">{product.name}</span>
                     <div className="flex items-center space-x-1 bg-blue-50 text-blue-600 px-2 py-1 rounded-full text-xs">
                       <span>{product.quantity}</span>
-                      <button
-                        onClick={() => {
-                          const newQuantity = prompt('Nova quantidade:', product.quantity.toString());
-                          if (newQuantity && !isNaN(Number(newQuantity))) {
-                            updateQuantity(product.id, Number(newQuantity));
-                          }
-                        }}
-                        className="ml-1 text-blue-600 hover:text-blue-800"
-                      >
-                        •
-                      </button>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-xs opacity-70">{product.addedBy}</span>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -593,4 +530,4 @@ const ShoppingListCreator: React.FC<ShoppingListCreatorProps> = ({ onSave, onCan
   );
 };
 
-export default ShoppingListCreator;
+export default IntelligentShoppingList;

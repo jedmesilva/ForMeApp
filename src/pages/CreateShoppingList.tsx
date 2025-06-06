@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ShoppingListCreator from '../components/ShoppingListCreator';
+import IntelligentShoppingList from '../components/IntelligentShoppingList';
 
 interface Product {
   id: string;
