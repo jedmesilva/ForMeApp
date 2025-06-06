@@ -5,13 +5,21 @@ import IntelligentShoppingList from '../components/IntelligentShoppingList';
 interface Product {
   id: string;
   name: string;
-  category: string;
-  price: number;
   quantity: number;
+  addedBy: 'search' | 'text' | 'audio' | 'photo';
 }
 
 export default function CreateShoppingList() {
   const navigate = useNavigate();
+
+  // Estabelecimentos reais do seu app
+  const availableStores = [
+    { id: "mercado-x", name: "Mercado X", address: "Rua das Compras, 123 - Centro" },
+    { id: "mercado-y", name: "Mercado Y", address: "Av. Principal, 456 - Bairro Norte" },
+    { id: "farmacia-z", name: "Farmácia Z", address: "Rua da Saúde, 789 - Centro" },
+    { id: "padaria-a", name: "Padaria do João", address: "Rua do Pão, 321 - Vila Nova" },
+    { id: "loja-b", name: "Loja de Conveniência 24h", address: "Av. Central, 654 - Centro" },
+  ];
 
   const handleSave = (products: Product[], selectedStore: string) => {
     if (products.length === 0) {
@@ -24,18 +32,19 @@ export default function CreateShoppingList() {
       return;
     }
 
-    // Salvar a lista de compras (aqui você pode integrar com sua API)
+    const selectedStoreData = availableStores.find(store => store.id === selectedStore);
+    
     const shoppingListData = {
+      id: Date.now().toString(),
       products,
-      store: selectedStore,
+      store: selectedStoreData,
       createdAt: new Date().toISOString(),
       totalItems: products.reduce((sum, product) => sum + product.quantity, 0),
-      estimatedTotal: products.reduce((sum, product) => sum + (product.price * product.quantity), 0)
+      status: 'criado'
     };
 
     console.log('Lista de compras criada:', shoppingListData);
     
-    // Redirecionar para a página de pedidos ou onde for apropriado
     navigate('/orders', { 
       state: { 
         message: 'Lista de compras criada com sucesso!',
@@ -49,9 +58,10 @@ export default function CreateShoppingList() {
   };
 
   return (
-    <ShoppingListCreator 
+    <IntelligentShoppingList 
       onSave={handleSave}
       onCancel={handleCancel}
+      availableStores={availableStores}
     />
   );
 }
