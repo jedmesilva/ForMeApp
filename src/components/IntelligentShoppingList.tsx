@@ -36,7 +36,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
   const [audioTranscript, setAudioTranscript] = useState('');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isProcessingImage, setIsProcessingImage] = useState(false);
-  
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -186,7 +186,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
         const result = e.target?.result as string;
         setUploadedImage(result);
         setIsProcessingImage(true);
-        
+
         // Simular processamento OCR (aqui seria integrado com API de OCR)
         setTimeout(() => {
           const extractedItems = ['Leite', 'Pão', 'Queijo', 'Presunto'];
@@ -216,7 +216,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
                 className="flex-1 outline-none text-gray-700 placeholder-gray-400"
               />
             </div>
-            
+
             {suggestions.length > 0 && (
               <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-lg max-h-48 overflow-y-auto z-10">
                 {suggestions.map((suggestion, index) => (
@@ -258,14 +258,14 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
                 {isRecording ? 'Parar' : 'Gravar'}
               </button>
             </div>
-            
+
             {isRecording && (
               <div className="flex items-center space-x-2 text-red-500 mb-3">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
                 <span className="text-sm">Gravando...</span>
               </div>
             )}
-            
+
             {audioTranscript && (
               <div className="p-3 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600 mb-2">Transcrição:</p>
@@ -301,7 +301,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
                 <p className="text-gray-600 font-medium">Tirar foto ou enviar imagem</p>
                 <p className="text-sm text-gray-400 mt-1">da sua lista de compras</p>
               </button>
-              
+
               {uploadedImage && (
                 <div className="mt-3">
                   <img src={uploadedImage} alt="Lista enviada" className="w-full h-32 object-cover rounded-lg" />
@@ -334,7 +334,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
                 Adicionar à Lista
               </button>
             </div>
-            
+
             {suggestions.length > 0 && (
               <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-lg max-h-48 overflow-y-auto z-10">
                 {suggestions.map((suggestion, index) => (
@@ -398,7 +398,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
             Salvar
           </button>
         </div>
-        
+
         {/* Seleção de Estabelecimento */}
         <div className="flex items-center space-x-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-xl px-4 py-3">
           <MapPin className="w-5 h-5 text-white" />
@@ -474,7 +474,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
         <div className="px-4 py-4">
           {renderTabContent()}
         </div>
-        
+
         {/* Botões de Navegação */}
         <div className="flex items-center justify-around px-4 py-3 bg-gray-50 border-t">
           <button
@@ -488,7 +488,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
             <Search className="w-5 h-5 mb-1" />
             <span className="text-xs font-medium">Procurar</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab('audio')}
             className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all transform hover:scale-105 ${
@@ -500,7 +500,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
             <Mic className="w-5 h-5 mb-1" />
             <span className="text-xs font-medium">Áudio</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab('photo')}
             className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all transform hover:scale-105 ${
@@ -512,7 +512,7 @@ const IntelligentShoppingList: React.FC<IntelligentShoppingListProps> = ({
             <Camera className="w-5 h-5 mb-1" />
             <span className="text-xs font-medium">Foto</span>
           </button>
-          
+
           <button
             onClick={() => setActiveTab('text')}
             className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all transform hover:scale-105 ${
