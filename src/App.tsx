@@ -10,6 +10,7 @@ import Account from "./pages/Account";
 import RequestBuyForMe from "./pages/RequestBuyForMe";
 import RequestMakeForMe from "./pages/RequestMakeForMe";
 import BuyForMeOrder from "./pages/BuyForMeOrder";
+import CreateShoppingList from "./pages/CreateShoppingList";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/account" element={<Account />} />
           <Route path="/request/buyforme" element={<RequestBuyForMe />} />
           <Route path="/request/makeforme" element={<RequestMakeForMe />} />
+          <Route path="/create-shopping-list" element={<CreateShoppingList />} />
           <Route path="/buyforme/:id" element={<BuyForMeOrder />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

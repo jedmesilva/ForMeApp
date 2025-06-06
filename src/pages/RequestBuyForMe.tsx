@@ -1,6 +1,6 @@
 
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ShoppingBag, Camera, Upload, FileText, MapPin, DollarSign, CreditCard, Check, Plus, Search, X } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Camera, Upload, FileText, MapPin, DollarSign, CreditCard, Check, Plus, Search, X, ListPlus } from "lucide-react";
 import { useState } from "react";
 
 interface Product {
@@ -148,22 +148,31 @@ export default function RequestBuyForMe() {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-6">
-        <div className="flex items-center gap-3 mb-4">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
-          </button>
-          <div>
-            <h1 className="text-xl font-bold text-white flex items-center gap-2">
-              <ShoppingBag className="w-6 h-6" />
-              Criar Pedido de Compra
-            </h1>
-            <p className="text-blue-100 text-sm">
-              Etapa {currentStep} de 4
-            </p>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+            >
+              <ArrowLeft className="w-5 h-5 text-white" />
+            </button>
+            <div>
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <ShoppingBag className="w-6 h-6" />
+                Criar Pedido de Compra
+              </h1>
+              <p className="text-blue-100 text-sm">
+                Etapa {currentStep} de 4
+              </p>
+            </div>
           </div>
+          <button
+            onClick={() => navigate('/create-shopping-list')}
+            className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+            title="Nova Lista Inteligente"
+          >
+            <ListPlus className="w-5 h-5 text-white" />
+          </button>
         </div>
 
         {/* Progress Bar */}
