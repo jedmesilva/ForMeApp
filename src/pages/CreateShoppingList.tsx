@@ -1,13 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import ShoppingListCreator from '../components/ShoppingListCreator';
+import IntelligentShoppingList from '../components/IntelligentShoppingList';
 
 interface Product {
   id: string;
   name: string;
-  category: string;
-  price: number;
   quantity: number;
+  addedBy: 'search' | 'text' | 'audio' | 'photo';
 }
 
 export default function CreateShoppingList() {
@@ -59,9 +58,10 @@ export default function CreateShoppingList() {
   };
 
   return (
-    <ShoppingListCreator 
+    <IntelligentShoppingList 
       onSave={handleSave}
       onCancel={handleCancel}
+      availableStores={availableStores}
     />
   );
 }
