@@ -1,0 +1,40 @@
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+import MakeForMe from "./pages/MakeForMe";
+import Orders from "./pages/Orders";
+import Account from "./pages/Account";
+import RequestBuyForMe from "./pages/RequestBuyForMe";
+import RequestMakeForMe from "./pages/RequestMakeForMe";
+import BuyForMeOrder from "./pages/BuyForMeOrder";
+import CreateShoppingList from "./pages/CreateShoppingList";
+import NotFound from "./pages/NotFound";
+
+const queryClient = new QueryClient();
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/makeforme" element={<MakeForMe />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/request/buyforme" element={<RequestBuyForMe />} />
+          <Route path="/request/makeforme" element={<RequestMakeForMe />} />
+          <Route path="/create-shopping-list" element={<CreateShoppingList />} />
+          <Route path="/buyforme/:id" element={<BuyForMeOrder />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+
+export default App;
