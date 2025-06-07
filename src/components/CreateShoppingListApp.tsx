@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Bookmark, Store, ShoppingBasket, Search, Mic, Camera, FileText, Trash, X, Wand2, Plus, ShoppingCart } from 'lucide-react';
 
 declare global {
@@ -9,6 +10,7 @@ declare global {
 }
 
 export default function ShoppingListApp() {
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedStore, setSelectedStore] = useState(null);
@@ -567,7 +569,10 @@ export default function ShoppingListApp() {
       <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
+            <button 
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all"
+            >
               <ArrowLeft className="w-6 h-6 text-white" />
             </button>
             <h1 className="text-xl font-bold">Lista de Compras</h1>
