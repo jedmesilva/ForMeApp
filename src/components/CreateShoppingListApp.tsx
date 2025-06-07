@@ -685,17 +685,17 @@ export default function ShoppingListApp() {
       {/* Main Content */}
       <div className="flex-1 px-4 py-8">
         {items.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="mb-6">
-              <div className="w-32 h-32 mx-auto mb-4 bg-gray-200 rounded-lg flex items-center justify-center">
-                <ShoppingBasket size={48} className="text-gray-400" />
+          <div className="text-center py-20">
+            <div className="mb-8">
+              <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                <ShoppingBasket size={40} className="text-gray-400" />
               </div>
             </div>
-            <h2 className="text-xl text-gray-600 font-medium mb-2">
-              Minha lista de compras está vazia
+            <h2 className="text-xl text-gray-800 font-semibold mb-3">
+              Lista vazia
             </h2>
-            <p className="text-gray-500">
-              Use a busca por texto, voz ou câmera para adicionar produtos
+            <p className="text-gray-600 text-base max-w-sm mx-auto leading-relaxed">
+              Use a busca, voz ou câmera para adicionar produtos à sua lista de compras
             </p>
           </div>
         ) : (
@@ -760,7 +760,7 @@ export default function ShoppingListApp() {
           
           {/* Search Results - Floating above when visible */}
           {showSearchResults && filteredProducts.length > 0 && activeTab !== 'text' && (
-            <div className="absolute bottom-full left-4 right-4 mb-4 bg-white rounded-lg border border-gray-200 shadow-lg max-h-80 overflow-y-auto z-50">
+            <div className="absolute bottom-full left-4 right-4 mb-4 bg-white rounded-xl border border-gray-200 shadow-lg max-h-80 overflow-y-auto z-50">
               {filteredProducts.map((product, index) => (
                 <div 
                   key={product.id}
@@ -770,7 +770,7 @@ export default function ShoppingListApp() {
                     setShowSearchResults(false);
                     setSelectedProductIndex(-1);
                   }}
-                  className={`p-3 border-b border-gray-100 cursor-pointer hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg last:border-b-0 ${
+                  className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 first:rounded-t-xl last:rounded-b-xl last:border-b-0 transition-all ${
                     index === selectedProductIndex ? 'bg-blue-50 border-blue-200' : ''
                   }`}
                 >
@@ -781,10 +781,10 @@ export default function ShoppingListApp() {
                       className="w-12 h-12 rounded-lg object-cover bg-gray-100 flex-shrink-0"
                     />
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-800 text-sm">{product.name}</h4>
-                      <p className="text-xs text-gray-500">{product.brand}</p>
+                      <h4 className="font-semibold text-gray-800 text-sm">{product.name}</h4>
+                      <p className="text-xs text-gray-600 mt-1">{product.brand}</p>
                     </div>
-                    <p className="text-sm font-semibold text-blue-600">
+                    <p className="text-sm font-bold text-blue-600">
                       R$ {product.price.toFixed(2).replace('.', ',')}
                     </p>
                   </div>
