@@ -190,7 +190,7 @@ export default function ShoppingListApp() {
     span.className = 'product-highlight bg-blue-100 text-blue-800 px-1 rounded font-medium mx-0.5';
     span.setAttribute('data-product-id', product.id.toString());
     span.textContent = product.name;
-    span.contentEditable = false;
+    span.contentEditable = "false";
     
     const removeBtn = document.createElement('button');
     removeBtn.innerHTML = '×';
@@ -524,7 +524,7 @@ export default function ShoppingListApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-64">
+    <div className="min-h-screen bg-gray-50 pb-64">
       <style dangerouslySetInnerHTML={{
         __html: `
           .scrollbar-hide {
@@ -564,17 +564,17 @@ export default function ShoppingListApp() {
       />
       
       {/* Header */}
-      <div className="bg-blue-500 text-white px-4 py-6">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center">
-              <ArrowLeft size={20} />
-            </div>
-            <h1 className="text-xl font-medium">Lista de produtos da compra</h1>
+            <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
+              <ArrowLeft className="w-6 h-6 text-white" />
+            </button>
+            <h1 className="text-xl font-bold">Lista de Compras</h1>
           </div>
-          <div className="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center">
-            <Bookmark size={20} />
-          </div>
+          <button className="p-2 rounded-lg bg-white bg-opacity-10 backdrop-blur-sm hover:bg-opacity-20 transition-all">
+            <Bookmark className="w-6 h-6 text-white" />
+          </button>
         </div>
         
         {/* Store Selection */}
@@ -588,7 +588,7 @@ export default function ShoppingListApp() {
               <input 
                 type="text"
                 placeholder="Selecione um estabelecimento..."
-                className="flex-1 bg-transparent outline-none text-gray-600"
+                className="flex-1 bg-transparent outline-none text-gray-700 text-base placeholder-gray-500"
                 value={storeSearchText}
                 onChange={(e) => {
                   setStoreSearchText(e.target.value);
@@ -667,17 +667,17 @@ export default function ShoppingListApp() {
       {/* Summary */}
       <div className="px-4 py-4 overflow-x-auto">
         <div className="flex gap-4 min-w-max">
-          <div className="flex items-center gap-2 bg-blue-100 rounded-2xl px-4 py-3 whitespace-nowrap">
-            <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+          <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 whitespace-nowrap">
+            <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
               {items.length}
             </div>
-            <span className="text-gray-600">Itens na lista</span>
+            <span className="text-gray-700 font-medium">Itens na lista</span>
           </div>
-          <div className="flex items-center gap-2 bg-blue-100 rounded-2xl px-4 py-3 whitespace-nowrap">
-            <div className="px-3 py-1 bg-blue-500 rounded-full text-white text-sm font-medium">
+          <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3 whitespace-nowrap">
+            <div className="px-3 py-1 bg-green-600 rounded-full text-white text-sm font-bold">
               R${totalPrice.toFixed(2).replace('.', ',')}
             </div>
-            <span className="text-gray-600">Total estimado</span>
+            <span className="text-gray-700 font-medium">Total estimado</span>
           </div>
         </div>
       </div>
@@ -699,9 +699,9 @@ export default function ShoppingListApp() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {items.map((item) => (
-              <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm">
+              <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-start gap-3 mb-3">
                   <img 
                     src={item.image} 
@@ -712,10 +712,10 @@ export default function ShoppingListApp() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-medium text-gray-800 text-base leading-tight">{item.name}</h3>
-                        <p className="text-sm text-gray-500 mt-1">{item.brand}</p>
+                        <h3 className="font-semibold text-gray-800 text-base leading-tight">{item.name}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{item.brand}</p>
                       </div>
-                      <p className="text-lg font-semibold text-blue-600 ml-3">
+                      <p className="text-lg font-bold text-blue-600 ml-3">
                         R$ {item.price.toFixed(2).replace('.', ',')}
                       </p>
                     </div>
@@ -724,17 +724,17 @@ export default function ShoppingListApp() {
                 
                 <div className="border-t border-gray-100 pt-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <button 
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300"
+                        className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-700 font-medium transition-colors"
                       >
                         -
                       </button>
-                      <span className="w-8 text-center font-medium">{item.quantity}</span>
+                      <span className="w-8 text-center font-semibold text-gray-800">{item.quantity}</span>
                       <button 
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600"
+                        className="w-9 h-9 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center font-medium transition-colors"
                       >
                         +
                       </button>
@@ -742,7 +742,7 @@ export default function ShoppingListApp() {
                     
                     <button 
                       onClick={() => removeItem(item.id)}
-                      className="text-red-500 hover:text-red-700 p-2"
+                      className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-all"
                     >
                       <Trash size={18} />
                     </button>
@@ -843,7 +843,7 @@ export default function ShoppingListApp() {
           )}
 
           {/* 1. Campo de busca - Top section */}
-          <div className="rounded-2xl p-4 mb-4 bg-gray-50 border border-gray-200">
+          <div className="rounded-xl p-4 mb-4 bg-white border border-gray-200 shadow-sm">
             {activeTab === 'text' ? (
               <div className="relative">
                 <div
@@ -852,26 +852,26 @@ export default function ShoppingListApp() {
                   suppressContentEditableWarning
                   onInput={handleEditorInput}
                   onKeyDown={handleEditorKeyDown}
-                  className="w-full min-h-[40px] max-h-[120px] overflow-y-auto outline-none text-gray-700 leading-relaxed"
+                  className="w-full min-h-[40px] max-h-[120px] overflow-y-auto outline-none text-gray-800 text-base leading-relaxed"
                   style={{ whiteSpace: 'pre-wrap' }}
                   data-placeholder="Digite sua lista de produtos ou receita aqui..."
                 />
                 
                 {selectedProducts.length > 0 && (
-                  <div className="flex items-center justify-between mt-2 pt-2 border-t border-gray-200">
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-200">
                     <button
                       onClick={clearAllProducts}
-                      className="text-xs text-red-600 hover:text-red-800 flex items-center gap-1"
+                      className="text-sm text-red-600 hover:text-red-700 flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-red-50 transition-all"
                     >
-                      <X size={12} />
+                      <X size={14} />
                       Limpar produtos
                     </button>
                     
                     <button
                       onClick={autoIdentifyProducts}
-                      className="px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-1 text-sm"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
                     >
-                      <Wand2 size={14} />
+                      <Wand2 size={16} />
                       Auto-identificar
                     </button>
                   </div>
@@ -881,7 +881,7 @@ export default function ShoppingListApp() {
               <input
                 type="text"
                 placeholder={isListening ? "Escutando... diga o nome do produto" : "Busque por um produto ou características..."}
-                className="w-full text-gray-600 text-lg outline-none bg-transparent"
+                className="w-full text-gray-800 text-base outline-none bg-transparent placeholder-gray-500"
                 value={searchText}
                 onFocus={() => {
                   if (!isListening) {
@@ -914,60 +914,46 @@ export default function ShoppingListApp() {
           </div>
 
           {/* 2. Ícones de ação - Middle section */}
-          <div className="flex justify-start gap-4 mb-6 ml-4">
+          <div className="flex justify-start gap-3 mb-6">
             <button 
               onClick={() => {
                 if (isListening) stopListening();
                 setActiveTab('search');
                 setShowSuggestions(false);
               }}
-              className={`p-2 rounded-full transition-colors ${
+              className={`p-3 rounded-xl transition-all transform hover:scale-105 ${
                 activeTab === 'search' && !isListening 
-                  ? 'bg-blue-100' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                  ? 'bg-blue-50 text-blue-600 shadow-sm' 
+                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
             >
-              <Search className={`w-4 h-4 ${
-                activeTab === 'search' && !isListening ? 'text-blue-600' : 'text-gray-600'
-              }`} />
+              <Search className="w-5 h-5" />
             </button>
             
             <button 
               onClick={toggleVoiceSearch}
-              className={`p-2 rounded-full transition-colors ${
+              className={`p-3 rounded-xl transition-all transform hover:scale-105 ${
                 isListening 
-                  ? 'bg-red-100' 
+                  ? 'bg-red-50 text-red-600 shadow-sm' 
                   : activeTab === 'voice' 
-                    ? 'bg-blue-100' 
-                    : 'bg-gray-200 hover:bg-gray-300'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm' 
+                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
             >
-              <Mic className={`w-4 h-4 ${
-                isListening 
-                  ? 'text-red-600' 
-                  : activeTab === 'voice' 
-                    ? 'text-blue-600' 
-                    : 'text-gray-600'
-              }`} />
+              <Mic className="w-5 h-5" />
             </button>
             
             <button 
               onClick={handleCameraClick}
-              className={`p-2 rounded-full transition-all duration-200 ${
+              className={`p-3 rounded-xl transition-all transform hover:scale-105 ${
                 cameraPressed
-                  ? 'bg-blue-500 scale-95'
+                  ? 'bg-blue-600 text-white scale-95'
                   : activeTab === 'camera'
-                    ? 'bg-blue-100'
-                    : 'bg-gray-200 hover:bg-gray-300'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
             >
-              <Camera className={`w-4 h-4 ${
-                cameraPressed
-                  ? 'text-white'
-                  : activeTab === 'camera'
-                    ? 'text-blue-600'
-                    : 'text-gray-600'
-              }`} />
+              <Camera className="w-5 h-5" />
             </button>
             
             <button 
@@ -976,24 +962,22 @@ export default function ShoppingListApp() {
                 setActiveTab('text');
                 setShowSearchResults(false);
               }}
-              className={`p-2 rounded-full transition-colors ${
+              className={`p-3 rounded-xl transition-all transform hover:scale-105 ${
                 activeTab === 'text' 
-                  ? 'bg-blue-100' 
-                  : 'bg-gray-200 hover:bg-gray-300'
+                  ? 'bg-blue-50 text-blue-600 shadow-sm' 
+                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
               }`}
             >
-              <FileText className={`w-4 h-4 ${
-                activeTab === 'text' ? 'text-blue-600' : 'text-gray-600'
-              }`} />
+              <FileText className="w-5 h-5" />
             </button>
           </div>
 
           {/* 3. Botão Solicitar compra - Bottom section (always visible) */}
           <button 
             onClick={handleRequestPurchase}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xl font-medium py-4 px-6 rounded-2xl transition-colors shadow-sm flex items-center justify-center gap-2"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold py-4 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg flex items-center justify-center gap-3"
           >
-            <ShoppingCart size={24} />
+            <ShoppingCart size={20} />
             Solicitar compra
           </button>
         </div>
