@@ -760,7 +760,7 @@ export default function ShoppingListApp() {
       </div>
 
       {/* NEW BOTTOM INTERFACE - Following the provided layout */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white">
+      <div className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl">
         <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-t-3xl border-t border-gray-200">
           
           {/* Search Results - Floating above when visible */}
