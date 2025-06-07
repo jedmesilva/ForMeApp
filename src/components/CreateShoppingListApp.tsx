@@ -761,7 +761,7 @@ export default function ShoppingListApp() {
 
       {/* NEW BOTTOM INTERFACE - Following the provided layout */}
       <div className="fixed bottom-0 left-0 right-0 bg-white">
-        <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-t-3xl shadow-lg border-t border-gray-200">
+        <div className="w-full max-w-2xl mx-auto p-6 bg-white rounded-t-3xl border-t border-gray-200">
           
           {/* Search Results - Floating above when visible */}
           {showSearchResults && filteredProducts.length > 0 && activeTab !== 'text' && (
@@ -848,7 +848,7 @@ export default function ShoppingListApp() {
           )}
 
           {/* 1. Campo de busca - Top section */}
-          <div className="rounded-xl p-4 mb-4 bg-white border border-gray-200 shadow-sm">
+          <div className="rounded-xl p-4 mb-4 bg-white border border-gray-200">
             {activeTab === 'text' ? (
               <div className="relative">
                 <div
